@@ -1,1 +1,2 @@
-.vscode
+#忽略Visual Studio Code的工作目录
+.vscode/
