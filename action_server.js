@@ -39,7 +39,7 @@ io.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        var numClients = io.sockets.in(room).clients.length;
+        var numClients = io.sockets.in(room).sockets.length;
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
@@ -50,8 +50,6 @@ io.on('connection', function(socket){
             
             //因为前面join了，所以这里的socket就应该和io.sockets.in(room)返回值一样？
             socket.emit('created', room, socket.id);
-
-            log( 'io.sockets.in(room) === socket?' + io.sockets.in(room) === socket);
         } 
         else if (numClients === 2) 
         {
