@@ -30,15 +30,26 @@ var io = socketIO.listen(httpsServer);
 
 io.on('connection', function(socket){
 
-    function log(content) {
+    function log(content) 
+    {
         console.log(content);
+    }
+
+    function printObj( obj )
+    {
+        for( var i in obj)
+        {
+            log(i + '=' + obj[i]);
+        }
     }
 
     //MSG-RECV-1 svr收到client发上来的创建房间请求
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        var numClients = io.sockets.sockets.length;
+        //var numClients = io.sockets.sockets.length;
+        var numClients = socket.
+
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
         if (numClients === 1) 
@@ -63,9 +74,10 @@ io.on('connection', function(socket){
         else 
         { // max two clients
             socket.emit('full or undefined', room);
-            log('full or undefined', room, io.sockets);
-            log('full or undefined', room, io.sockets.sockets);
-            log('full or undefined', room, io.sockets.sockets.length);
+            log('===========')
+            printObj(socket);
+            log('===========')
+            printObj(io);
         }
     });
 
