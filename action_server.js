@@ -39,7 +39,7 @@ io.on('connection', function(socket){
     {
         for( var i in obj)
         {
-            log(i + '=' + obj[i]);
+            log(i + '=' + obj[i].toString());
         }
     }
 
