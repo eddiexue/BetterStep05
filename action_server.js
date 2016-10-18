@@ -29,11 +29,44 @@ var httpsServer = https.createServer(options, function(request, response){
 var io = socketIO.listen(httpsServer);
 
 io.on('connection', function(socket){
-    socket.on('message', function(message){
-        console.log('Recv msg(', message, ') from) ', socket);
-    })
+
+    function log(array) {
+        console.log.apply(console, array);
+    }
+
+    //MSG-RECV-1 svr收到client发上来的创建房间请求
+    socket.on('create or join', function(room, funny) {
+        log('Received request to create or join room ' + room + ', ' + funny);
+
+        var numClients = io.sockets.sockets.length;
+        log('Room ' + room + ' now has ' + numClients + ' client(s)');
+
+        if (numClients === 1) 
+        {
+            socket.join(room);
+            log('Client ID ' + socket.id + ' created room ' + room);
+            
+            //MSG-SEDN-2 svr告知客户端说已完成房间创建
+            socket.emit('created', room, socket.id);
+        } 
+        else if (numClients === 2) 
+        {
+            log('Client ID ' + socket.id + ' joined room ' + room);
+            //MSG-SEDN-2 svr告知客户端说已完成房间加入
+            io.sockets.in(room).emit('join', room);
+            
+            socket.join(room);
+            socket.emit('joined', room, socket.id);
+            //MSG-SEDN-3 svr告知同房间的对端浏览器完成房间加入
+            io.sockets.in(room).emit('ready');
+        } 
+        else 
+        { // max two clients
+            socket.emit('full', room);
+        }
+    });
 
     socket.on('bye', function(){
-        console.log('received bye');
+        log('received bye');
     });
 });

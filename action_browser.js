@@ -27,13 +27,16 @@ room = prompt('Enter room name:');
 
 var socket = io.connect();
 
+//MSG-SEND-1, 创建或加入房间
+var funny = 'hello world';
 if (room !== '') {
-  socket.emit('create or join', room);
+  socket.emit('create or join', room, funny);
   console.log('Attempted to create or  join room', room);
 }
 
-socket.on('full', function(room) {
-  console.log('Room ' + room + ' is full');
+socket.on('created', function(room) {
+  console.log('Created room ' + room);
+  isInitiator = true;
 });
 
 socket.on('join', function (room){
@@ -47,8 +50,17 @@ socket.on('joined', function(room) {
   isChannelReady = true;
 });
 
+socket.on('full', function(room) {
+  console.log('Room ' + room + ' is full');
+});
+
 socket.on('log', function(array) {
   console.log.apply(console, array);
 });
 
-console.log('进行到这里，发生了什么？');
+////////////////////////////////////////////////
+
+function sendMessage(message) {
+  console.log('Client sending message: ', message);
+  socket.emit('message', message);
+}
