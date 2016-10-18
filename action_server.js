@@ -26,7 +26,8 @@ var httpsServer = https.createServer(options, function(request, response){
 }).listen(8888);
 
 //让socket监听httpServer的事件
-io = socketIO.attach(httpsServer);
+io = socketIO.listen(httpsServer);
+
 io.on('connection', function(socket){
     socket.on('message', function(message){
         console.log('Recv msg(', message, ') from) ', socket);
