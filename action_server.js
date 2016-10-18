@@ -39,8 +39,7 @@ io.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        //var numClients = io.sockets.in(room).clients.length;
-        var numClients = socket.clients.length;
+        var numClients = io.sockets.in(room).clients.length;
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
@@ -49,18 +48,18 @@ io.on('connection', function(socket){
             socket.join(room);
             log('Client ID ' + socket.id + ' created room ' + room);
             
-            //MSG-SEDN-2 svr告知客户端说已完成房间创建
+            //因为前面join了，所以这里的socket就应该和io.sockets.in(room)返回值一样？
             socket.emit('created', room, socket.id);
+
+            log( 'io.sockets.in(room) === socket?' + io.sockets.in(room) === socket);
         } 
         else if (numClients === 2) 
         {
             log('Client ID ' + socket.id + ' joined room ' + room);
-            //MSG-SEDN-2 svr告知客户端说已完成房间加入
             io.sockets.in(room).emit('join', room);
             
             socket.join(room);
             socket.emit('joined', room, socket.id);
-            //MSG-SEDN-3 svr告知同房间的对端浏览器完成房间加入
             io.sockets.in(room).emit('ready');
         } 
         else 
