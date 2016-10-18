@@ -30,8 +30,8 @@ var io = socketIO.listen(httpsServer);
 
 io.on('connection', function(socket){
 
-    function log(array) {
-        console.log.apply(console, array);
+    function log(content) {
+        console.log(content);
     }
 
     //MSG-RECV-1 svr收到client发上来的创建房间请求
