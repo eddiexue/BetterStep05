@@ -28,7 +28,7 @@ var httpsServer = https.createServer(options, function(request, response){
 //让socket监听httpServer的事件
 var io = socketIO.listen(httpsServer);
 
-io.on('connection', function(socket){
+io.sockets.on('connection', function(socket){
 
     function log(content) 
     {
@@ -39,9 +39,7 @@ io.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        //var numClients = io.sockets.in(room).clients.length;
         var numClients = io.sockets.sockets.length;
-
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
