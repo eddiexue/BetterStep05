@@ -18,7 +18,7 @@ var fileHandler = new nodeStatic.Server( {cache: 1, indexFile: 'frontpage.html'}
 //启动简单文件服务器，到这里其实只负责把文件都拉回去
 var httpsServer = https.createServer(options, function(request, response){
     request.addListener('end', function () {
-        fileServer.serve(request, response).addListener('error', function (err) {
+        fileHandler.serve(request, response).addListener('error', function (err) {
             console.error("Error serving: " + request.url + " - " + err.message);
         });
     }).resume();
