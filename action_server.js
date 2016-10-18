@@ -35,46 +35,12 @@ io.on('connection', function(socket){
         console.log(content);
     }
 
-    function obj2string(o)
-    { 
-        var r=[]; 
-        if(typeof o=="string"){ 
-            return "\""+o.replace(/([\'\"\\])/g,"\\$1").replace(/(\n)/g,"\\n").replace(/(\r)/g,"\\r").replace(/(\t)/g,"\\t")+"\""; 
-        } 
-        if(typeof o=="object"){ 
-            if(!o.sort){ 
-                for(var i in o){ 
-                    r.push(i+":"+obj2string(o[i])); 
-                } 
-                if(!!document.all&&!/^\n?function\s*toString\(\)\s*\{\n?\s*\[native code\]\n?\s*\}\n?\s*$/.test(o.toString)){ 
-                    r.push("toString:"+o.toString.toString()); 
-                } 
-                r="{"+r.join()+"}"; 
-            }else{ 
-                for(var i=0;i<o.length;i++){ 
-                    r.push(obj2string(o[i])) 
-                } 
-                r="["+r.join()+"]"; 
-            }  
-            return r; 
-        }  
-        return o.toString(); 
-    } 
-
-    function printObj(obj)
-    {
-        for( var i in obj)
-        {
-            log(i + '=' + obj2string(obj[i]));
-        }
-    }
-
     //MSG-RECV-1 svr收到client发上来的创建房间请求
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        var numClients = io.sockets.sockets.length;
-        //var numClients = socket.
+        //var numClients = io.sockets.sockets.length;
+        var numClients = io.sockets.in(room).clients.length;
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
