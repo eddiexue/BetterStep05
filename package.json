@@ -1,8 +1,10 @@
 {
-  "name": "webrtc-codelab",
+  "name": "simple-webrtc",
   "version": "0.0.1",
-  "description": "WebRTC codelab",
-  "dependencies": {
-    "node-static": "0.7.7",
-    "socket.io": "1.2.0"
-  }}
+  "description": "simple-webrtc",
+  "dependencies": 
+  {
+    "node-static": ">=0.7.9",
+    "socket.io": ">=1.4.5"
+  }
+}
