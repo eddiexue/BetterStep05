@@ -47,8 +47,8 @@ io.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        //var numClients = io.sockets.sockets.length;
-        var numClients = socket.
+        var numClients = io.sockets.sockets.length;
+        //var numClients = socket.
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
