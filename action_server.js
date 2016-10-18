@@ -62,7 +62,10 @@ io.on('connection', function(socket){
         } 
         else 
         { // max two clients
-            socket.emit('full', room);
+            socket.emit('full or undefined', room);
+            log('full or undefined', room, io.sockets);
+            log('full or undefined', room, io.sockets.sockets);
+            log('full or undefined', room, io.sockets.sockets.length);
         }
     });
 
