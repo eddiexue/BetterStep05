@@ -74,9 +74,9 @@ io.on('connection', function(socket){
         else 
         { // max two clients
             socket.emit('full or undefined', room);
-            log('===========')
+            log('===========');
             printObj(socket);
-            log('===========')
+            log('===========');
             printObj(io);
         }
     });
