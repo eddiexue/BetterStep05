@@ -35,8 +35,8 @@ io.on('connection', function(socket){
     }
 
     //MSG-RECV-1 svr收到client发上来的创建房间请求
-    socket.on('create or join', function(room, funny) {
-        log('Received request to create or join room ' + room + ', ' + funny);
+    socket.on('create or join', function(room) {
+        log('Received request to create or join room ' + room);
 
         var numClients = io.sockets.sockets.length;
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
