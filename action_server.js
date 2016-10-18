@@ -39,8 +39,8 @@ io.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        //var numClients = io.sockets.sockets.length;
-        var numClients = io.sockets.in(room).clients.length;
+        //var numClients = io.sockets.in(room).clients.length;
+        var numClients = socket.clients.length;
 
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
@@ -66,10 +66,6 @@ io.on('connection', function(socket){
         else 
         { // max two clients
             socket.emit('full or undefined', room);
-            log('===========');
-            printObj(socket);
-            log('===========');
-            printObj(io);
         }
     });
 
