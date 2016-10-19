@@ -50,8 +50,6 @@ io.sockets.on('connection', function(socket){
             numClients = 0;
         }
         
-        log('Room ' + room + ' now has ' + numClients + ' client(s)');
-
         if (numClients === 0) 
         {
             socket.join(room);
@@ -73,6 +71,11 @@ io.sockets.on('connection', function(socket){
         { // max two clients
             socket.emit('full or undefined:', room);
         }
+        
+        //再看看有多少人连上来了
+        numClients = io.sockets.adapter.rooms[room].length;
+        log('Room ' + room + ' now has ' + numClients + ' client(s)');
+
     });
 
     socket.on('bye', function(){
