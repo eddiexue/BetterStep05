@@ -83,7 +83,38 @@ io.sockets.on('connection', function(socket){
 
     });
 
+    socket.on('ipaddr', function() {
+        var ifaces = os.networkInterfaces();
+        for (var dev in ifaces) {
+            ifaces[dev].forEach(function(details) {
+                if (details.family === 'IPv4' && details.address !== '127.0.0.1') {
+                    socket.emit('ipaddr', details.address);
+                }
+            });
+        }
+    });
+
     socket.on('bye', function(){
         log('received bye');
     });
 });
+
+/** 补充一些socket.io发消息的用法
+ // send to current request socket client
+socket.emit('message', "this is a test");
+
+// sending to all clients except sender
+socket.broadcast.emit('message', "this is a test");
+
+// sending to all clients in 'game' room(channel) except sender
+socket.broadcast.to('game').emit('message', 'nice game');
+
+// sending to all clients, include sender
+io.sockets.emit('message', "this is a test");
+
+// sending to all clients in 'game' room(channel), include sender
+io.sockets.in('game').emit('message', 'cool game');
+
+// sending to individual socketid
+io.sockets.socket(socketid).emit('message', 'for your eyes only');
+ */

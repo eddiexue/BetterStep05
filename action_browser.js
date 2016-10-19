@@ -28,7 +28,7 @@ var room = 'eddiexue';
 // Could prompt for room name:
 //room = prompt('Enter room name:');
 
-var socket = io.connect();
+var socket = io.connect();//这里的io对象是从哪来的？
 
 //MSG-SEND-1, 创建或加入房间
 if (room !== '') {
