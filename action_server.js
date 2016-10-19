@@ -39,8 +39,10 @@ io.sockets.on('connection', function(socket){
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
-        var numClients = io.sockets.sockets.length;
-
+        //http://stackoverflow.com/questions/9352549/getting-how-many-people-are-in-a-chat-room-in-socket-io
+        //var numClients = io.sockets.sockets.length;
+        var numClients = io.sockets.adapter.rooms[room].length
+        
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
         if (numClients === 1) 
@@ -62,7 +64,7 @@ io.sockets.on('connection', function(socket){
         } 
         else 
         { // max two clients
-            socket.emit('full or undefined', room);
+            socket.emit('full or undefined:', room);
         }
     });
 

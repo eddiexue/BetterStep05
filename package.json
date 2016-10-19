@@ -5,6 +5,6 @@
   "dependencies": 
   {
     "node-static": ">=0.7.9",
-    "socket.io": "latest"
+    "socket.io": "^1.4.5"
   }
 }
