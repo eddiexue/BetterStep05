@@ -3,3 +3,5 @@
 
 #忽略npm安装目录及其内容，因为可以npm install
 node_modules/
+
+jsconfig.json
