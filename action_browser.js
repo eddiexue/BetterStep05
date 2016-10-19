@@ -31,10 +31,9 @@ var room = 'eddiexue';
 var socket = io.connect();
 
 //MSG-SEND-1, 创建或加入房间
-var funny = 'hello world';
 if (room !== '') {
   socket.emit('create or join', room);
-  console.log('Attempted to create or  join room', room);
+  console.log('Attempted to create or join room', room);
 }
 
 socket.on('created', function(room) {

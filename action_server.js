@@ -61,10 +61,15 @@ io.sockets.on('connection', function(socket){
         else if (numClients === 1) 
         {
             log('Client ID ' + socket.id + ' joined room ' + room);
+            //这条消息在join之前，所以只有第一个进来的那边能收到
             io.sockets.in(room).emit('join', room);
             
+            //第二个参加者也进来了
             socket.join(room);
+            //通过指定ID的方式专门给第二个进来的人发消息
             socket.emit('joined', room, socket.id);
+
+            //知会房间里的所有人准备就绪
             io.sockets.in(room).emit('ready');
         } 
         else 
