@@ -41,11 +41,18 @@ io.sockets.on('connection', function(socket){
 
         //http://stackoverflow.com/questions/9352549/getting-how-many-people-are-in-a-chat-room-in-socket-io
         //var numClients = io.sockets.sockets.length;
-        var numClients = io.sockets.adapter.rooms[room].length
+        
+        var numClients = -1;
+        try {
+            numClients = io.sockets.adapter.rooms[room].length;
+        } catch (error) {
+            //房间里没人的话，rooms[room]数组是空的，所以调用.length会抛异常
+            numClients = 0;
+        }
         
         log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
-        if (numClients === 1) 
+        if (numClients === 0) 
         {
             socket.join(room);
             log('Client ID ' + socket.id + ' created room ' + room);
@@ -53,7 +60,7 @@ io.sockets.on('connection', function(socket){
             //因为前面join了，所以这里的socket就应该和io.sockets.in(room)返回值一样？
             socket.emit('created', room, socket.id);
         } 
-        else if (numClients === 2) 
+        else if (numClients === 1) 
         {
             log('Client ID ' + socket.id + ' joined room ' + room);
             io.sockets.in(room).emit('join', room);
