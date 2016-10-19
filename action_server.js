@@ -35,7 +35,6 @@ io.sockets.on('connection', function(socket){
         console.log(content);
     }
 
-    //MSG-RECV-1 svr收到client发上来的创建房间请求
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
@@ -69,7 +68,7 @@ io.sockets.on('connection', function(socket){
             //通过指定ID的方式专门给第二个进来的人发消息
             socket.emit('joined', room, socket.id);
 
-            //知会房间里的所有人准备就绪
+            //知会房间里的所有人准备就绪，但是貌似没啥用
             io.sockets.in(room).emit('ready');
         } 
         else 
@@ -94,9 +93,21 @@ io.sockets.on('connection', function(socket){
         }
     });
 
+
     socket.on('bye', function(){
-        log('received bye');
+        console.log('received bye');
     });
+
+
+    //消息群发功能，将收到的消息广播给房间里所有人？
+    socket.on('message', function(message) {
+        log('Client(' + socket.id + ') said: ' + message);
+        
+        // for a real app, would be room-only (not broadcast)
+        // socket.broadcast.emit('message', message);
+        socket.broadcast.to(socket.id).emit('message', message);
+    });
+
 });
 
 /** 补充一些socket.io发消息的用法
