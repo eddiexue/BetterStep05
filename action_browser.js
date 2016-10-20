@@ -123,6 +123,8 @@ function gotStream(stream) {
   sendMessage('got user media');
   if (isInitiator) {
     maybeStart();
+  }else{
+    console.log('Adding local stream. but isInitiator is false');
   }
 }
 
@@ -166,4 +168,8 @@ function createPeerConnection() {
 
 function doCall() {
   console.log('[doCall] do nothing now!');
+}
+
+function requestTurn(turnURL){
+  console.log('[requestTurn] do nothing now!');
 }
