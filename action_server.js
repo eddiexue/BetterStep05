@@ -103,9 +103,18 @@ io.sockets.on('connection', function(socket){
     socket.on('message', function(message) {
         log('Client(' + socket.id + ') said: ' + message);
         
+        if( message === 'got user media')
+        {
+            //原来代码里，作者只是想用这个消息给自己发个提醒消息，好在浏览器调用maybeStart()
+            //所以这里也就是再发回给自己
+            socket.emit('message', message);
+        }
+        else
+        {
+            socket.broadcast.to(socket.id).emit('message', message);
+        }
         // for a real app, would be room-only (not broadcast)
         // socket.broadcast.emit('message', message);
-        socket.broadcast.to(socket.id).emit('message', message);
     });
 
 });
@@ -128,4 +137,13 @@ io.sockets.in('game').emit('message', 'cool game');
 
 // sending to individual socketid
 io.sockets.socket(socketid).emit('message', 'for your eyes only');
+
+socket.send(): is pretty much same as socket.emit() just this time it uses a default event name 'message'. so it takes just one parameter, data you want to pass. Ex.:
+
+socket.send('hi');
+And this time you register and listen the 'message' event name;
+
+socket.on('message', function (data) {
+  console.log(data);  // it will return 'hi'
+})
  */

@@ -111,20 +111,20 @@ navigator.mediaDevices.getUserMedia({
   audio: false,
   video: true
 })
-.then(gotStream)
+.then(gotStream)//启动设备会被卡住，gotStream可能后面才会执行
 .catch(function(e) {
   alert('getUserMedia() error: ' + e.name);
 });
 
 function gotStream(stream) {
-  console.log('Adding local stream.');
+  console.log('[gotStream]Adding local stream.');
   localVideo.src = window.URL.createObjectURL(stream);
   localStream = stream;
   sendMessage('got user media');
   if (isInitiator) {
     maybeStart();
   }else{
-    console.log('Adding local stream. but isInitiator is false');
+    console.log('[gotStream] isInitiator is false，so maybeStart() not called');
   }
 }
 
