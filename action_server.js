@@ -22,7 +22,7 @@ var httpsServer = https.createServer(options, function(request, response){
             console.error("Error serving: " + request.url + " - " + err.message);
         });
     }).resume();
-    console.log('Request: ' + request.url);
+    //console.log('Request: ' + request.url);
 }).listen(8888);
 
 //让socket监听httpServer的事件
