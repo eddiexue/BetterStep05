@@ -129,6 +129,8 @@ var constraints = {
 };
 
 console.log('Getting user media with constraints', constraints);
+console.log('isInitiator=', isInitiator);
+console.log('location.hostname=', location.hostname);
 
 if (location.hostname !== 'localhost') {
   requestTurn(
