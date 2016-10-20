@@ -38,7 +38,7 @@ var socket = io.connect();//这里的io对象是从哪来的？
 
 if (room !== '') {
   socket.emit('create or join', room);
-  console.log('Attempted to create or join room', room);
+  console.log('1. Attempted to create or join room', room);
 }
 
 //Server发消息告诉第一个浏览器客户端进房间成功
@@ -72,17 +72,17 @@ socket.on('log', function(array) {
 ////////////////////////////////////////////////
 
 function sendMessage(message) {
-  console.log('Client sending message: ', message);
+  console.log('[SEND_MSG]: ', message);
   socket.emit('message', message);
 }
 
 // This client receives a message
 socket.on('message', function(message) {
-  console.log('Client received message:', message);
-  /*
+  console.log('[RECV_MSG]:', message);
   if (message === 'got user media') {
     maybeStart();
-  } else if (message.type === 'offer') {
+  } 
+  else if (message.type === 'offer') {
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
@@ -99,7 +99,7 @@ socket.on('message', function(message) {
   } else if (message === 'bye' && isStarted) {
     handleRemoteHangup();
   }
-  */
+  
 });
 
 ////////////////////////////////////////////////////
@@ -132,9 +132,9 @@ var constraints = {
   video: true
 };
 
-console.log('Getting user media with constraints', constraints);
-console.log('isInitiator=', isInitiator);
-console.log('location.hostname=', location.hostname);
+console.log('2. Getting user media with constraints', constraints);
+console.log('2. isInitiator=', isInitiator);
+console.log('2. location.hostname=', location.hostname);
 
 if (location.hostname !== 'localhost') {
   requestTurn(
@@ -163,13 +163,13 @@ window.onbeforeunload = function() {
 /////////////////////////////////////////////////////////
 
 function createPeerConnection() {
-  console.log('[createPeerConnection] do nothing now!')
+  console.log('()createPeerConnection() do nothing now!')
 }
 
 function doCall() {
-  console.log('[doCall] do nothing now!');
+  console.log('()doCall() do nothing now!');
 }
 
 function requestTurn(turnURL){
-  console.log('[requestTurn] do nothing now!');
+  console.log('()requestTurn() do nothing now!');
 }
