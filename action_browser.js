@@ -117,14 +117,14 @@ navigator.mediaDevices.getUserMedia({
 });
 
 function gotStream(stream) {
-  console.log('[gotStream]Adding local stream.');
+  console.log('()gotStream()Adding local stream.');
   localVideo.src = window.URL.createObjectURL(stream);
   localStream = stream;
   sendMessage('got user media');
   if (isInitiator) {
     maybeStart();
   }else{
-    console.log('[gotStream] isInitiator is false，so maybeStart() not called');
+    console.log('()gotStream() isInitiator is false，so maybeStart() not called');
   }
 }
 
@@ -144,6 +144,8 @@ if (location.hostname !== 'localhost') {
 
 function maybeStart() {
   console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
+
+  //房间只有一个人的时候，isChannelReady===false，所以进不来
   if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
@@ -162,6 +164,38 @@ window.onbeforeunload = function() {
 
 /////////////////////////////////////////////////////////
 
+function requestTurn(turnURL){
+  var turnExists = false;
+  for (var i in pcConfig.iceServers) {
+    if (pcConfig.iceServers[i].url.substr(0, 5) === 'turn:') {
+      turnExists = true;
+      turnReady = true;
+      console.log('()requestTurn()', pcConfig.iceServers[i]);
+      break;
+    }
+  }
+  /*
+  if (!turnExists) {
+    console.log('Getting TURN server from ', turnURL);
+    // No TURN server. Get one from computeengineondemand.appspot.com:
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var turnServer = JSON.parse(xhr.responseText);
+        console.log('Got TURN server: ', turnServer);
+        pcConfig.iceServers.push({
+          'url': 'turn:' + turnServer.username + '@' + turnServer.turn,
+          'credential': turnServer.password
+        });
+        turnReady = true;
+      }
+    };
+    xhr.open('GET', turnURL, true);
+    xhr.send();
+  }
+  */
+}
+
 function createPeerConnection() {
   console.log('()createPeerConnection() do nothing now!')
 }
@@ -170,6 +204,4 @@ function doCall() {
   console.log('()doCall() do nothing now!');
 }
 
-function requestTurn(turnURL){
-  console.log('()requestTurn() do nothing now!');
-}
+
