@@ -230,7 +230,7 @@ function setLocalAndSendMessage(sessionDescription) {
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   console.log('setLocalAndSendMessage sending message', sessionDescription);
-  sendMessage(sessionDescription);
+  sendMessage(sessionDescription, room);
 }
 
 function handleCreateOfferError(event) {
@@ -238,7 +238,33 @@ function handleCreateOfferError(event) {
 }
 
 function doAnswer() {
-  console.log('()doAnswer() do nothing now!');
+  console.log('()doAnswer(): Sending answer to peer.');
+  pc.createAnswer().then(
+    setLocalAndSendMessage,
+    onCreateSessionDescriptionError
+  );
 }
 
+function onCreateSessionDescriptionError(error) {
+  trace('Failed to create session description: ' + error.toString());
+}
 
+function hangup() {
+  console.log('Hanging up.');
+  stop();
+  sendMessage('bye');
+}
+
+function handleRemoteHangup() {
+  console.log('Session terminated.');
+  stop();
+  isInitiator = false;
+}
+
+function stop() {
+  isStarted = false;
+  // isAudioMuted = false;
+  // isVideoMuted = false;
+  pc.close();
+  pc = null;
+}
