@@ -221,7 +221,20 @@ function handleRemoteStreamRemoved(event) {
 }
 
 function doCall() {
-  console.log('()doCall() do nothing now!');
+  console.log('doCall(): Sending offer to peer');
+  pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+}
+
+function setLocalAndSendMessage(sessionDescription) {
+  // Set Opus as the preferred codec in SDP if Opus is present.
+  //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+  pc.setLocalDescription(sessionDescription);
+  console.log('setLocalAndSendMessage sending message', sessionDescription);
+  sendMessage(sessionDescription);
+}
+
+function handleCreateOfferError(event) {
+  console.log('createOffer() error: ', event);
 }
 
 function doAnswer() {
