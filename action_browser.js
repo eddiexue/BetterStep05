@@ -87,7 +87,7 @@ function sendMessage(message, roomid) {
 
 // This client receives a message
 socket.on('message', function(message) {
-  console.log('[RECV_MSG]:', message);
+  console.log('[RECV_MSG]['+message.type+']', message);
   if (message === 'got user media') {
     maybeStart();
   } 
