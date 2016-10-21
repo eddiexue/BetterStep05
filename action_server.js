@@ -103,10 +103,14 @@ io.sockets.on('connection', function(socket){
     socket.on('message', function(message) {
         log('Client(' + socket.id + ') said: ' + message);
         
+        //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
+        var joinedRoom = io.sockets.manager.roomClients[socket.id]
+        //io.sockets.in(joinedRoom).emit('message', message);
+        io.sockets.in(joinedRoom).send(message);
+
+        /*
         if( message === 'got user media')
         {
-            //原来代码里，作者只是想用这个消息给自己发个提醒消息，好在浏览器调用maybeStart()
-            //所以这里也就是再发回给自己
             socket.emit('message', message);
         }
         else
