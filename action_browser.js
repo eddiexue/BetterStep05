@@ -82,21 +82,24 @@ socket.on('message', function(message) {
   if (message === 'got user media') {
     maybeStart();
   } 
-  else if (message.type === 'offer') {
+  else if (message.type === 'offer') {//adapter.js里会发这种类型的消息，由被邀请方发出
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
     pc.setRemoteDescription(new RTCSessionDescription(message));
     doAnswer();
-  } else if (message.type === 'answer' && isStarted) {
+  } 
+  else if (message.type === 'answer' && isStarted) {
     pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && isStarted) {
+  } 
+  else if (message.type === 'candidate' && isStarted) {
     var candidate = new RTCIceCandidate({
       sdpMLineIndex: message.label,
       candidate: message.candidate
     });
     pc.addIceCandidate(candidate);
-  } else if (message === 'bye' && isStarted) {
+  } 
+  else if (message === 'bye' && isStarted) {
     handleRemoteHangup();
   }
   
@@ -174,34 +177,55 @@ function requestTurn(turnURL){
       break;
     }
   }
-  /*
-  if (!turnExists) {
-    console.log('Getting TURN server from ', turnURL);
-    // No TURN server. Get one from computeengineondemand.appspot.com:
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var turnServer = JSON.parse(xhr.responseText);
-        console.log('Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
-          'url': 'turn:' + turnServer.username + '@' + turnServer.turn,
-          'credential': turnServer.password
-        });
-        turnReady = true;
-      }
-    };
-    xhr.open('GET', turnURL, true);
-    xhr.send();
-  }
-  */
 }
 
+/////////////////////////////////////////////////////////
+
 function createPeerConnection() {
-  console.log('()createPeerConnection() do nothing now!')
+  try {
+    pc = new RTCPeerConnection(null);
+    pc.onicecandidate = handleIceCandidate;
+    pc.onaddstream = handleRemoteStreamAdded;
+    pc.onremovestream = handleRemoteStreamRemoved;
+    console.log('Created RTCPeerConnnection');
+  } catch (e) {
+    console.log('Failed to create PeerConnection, exception: ' + e.message);
+    alert('Cannot create RTCPeerConnection object.');
+    return;
+  }
+}
+
+//给房间所有人(包括自己)发消息触发操作
+function handleIceCandidate(event) {
+  console.log('icecandidate event: ', event);
+  if (event.candidate) {
+    sendMessage({
+      type: 'candidate',
+      label: event.candidate.sdpMLineIndex,
+      id: event.candidate.sdpMid,
+      candidate: event.candidate.candidate
+    }, room);
+  } else {
+    console.log('End of candidates.');
+  }
+}
+
+function handleRemoteStreamAdded(event) {
+  console.log('Remote stream added.');
+  remoteVideo.src = window.URL.createObjectURL(event.stream);
+  remoteStream = event.stream;
+}
+
+function handleRemoteStreamRemoved(event) {
+  console.log('Remote stream removed. Event: ', event);
 }
 
 function doCall() {
   console.log('()doCall() do nothing now!');
+}
+
+function doAnswer() {
+  console.log('()doAnswer() do nothing now!');
 }
 
 

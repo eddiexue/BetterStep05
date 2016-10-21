@@ -110,6 +110,7 @@ io.sockets.on('connection', function(socket){
         log('Client(' + socket.id + ') said: ' + message);
         
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
+        //注意只有一个人进房间的时候触发不了下一步操作，另一个人进来之后还会在房间内群发，这时候才能触发下一步操作
         //io.sockets.in(roomid).emit('message', message);
         //sendObjToBrowser(io.sockets.adapter.rooms);
         io.sockets.in(roomid).send(message);

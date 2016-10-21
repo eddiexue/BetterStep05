@@ -71,7 +71,7 @@ socket.on('message', function(message) {
   console.log('Client received message:', message);
   if (message === 'got user media') {
     maybeStart();
-  } else if (message.type === 'offer') {
+  } else if (message.type === 'offer') {//adapter.js里会发这种类型的消息
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
