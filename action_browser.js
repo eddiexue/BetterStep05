@@ -6,7 +6,7 @@ var isStarted = false;
 var localStream;
 var pc;
 var remoteStream;
-var turnReady;
+var turnReady;//关键点！这个玩意不知道在哪里用的！！
 
 var wantHostMode      = false;
 var wantReflexiveMode = false;
@@ -206,7 +206,7 @@ function createPeerConnection() {
 
 //给房间所有人(包括自己)发消息触发操作
 function handleIceCandidate(event) {
-  console.log('icecandidate event: ', event);
+  console.log('icecandidate event: ', event.candidate);
   var ice = event.candidate;
   if (ice) {
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) return;
