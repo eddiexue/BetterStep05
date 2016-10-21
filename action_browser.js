@@ -107,6 +107,9 @@ socket.on('message', function(message) {
       candidate: message.candidate
     });
     pc.addIceCandidate(candidate);
+
+    console.log('========PC:', pc);
+    console.log('========CD:', candidate);
   } 
   else if (message === 'bye' && isStarted) {
     handleRemoteHangup();

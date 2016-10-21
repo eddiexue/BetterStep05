@@ -2013,8 +2013,6 @@ var edgeShim = {
       if (arguments.length && typeof arguments[0] === 'function') {
         window.setTimeout(arguments[0], 0, desc);
       }
-
-      console.log('======window.RTCPeerConnection.prototype.createOffer', tracks)
       return Promise.resolve(desc);
     };
 
