@@ -97,9 +97,11 @@ socket.on('message', function(message) {
     }
     pc.setRemoteDescription(new RTCSessionDescription(message));
     doAnswer();
+    console.log('========(1)', message);
   } 
   else if (message.type === 'answer' && isStarted) {
     pc.setRemoteDescription(new RTCSessionDescription(message));
+    console.log('========(2)', message);
   } 
   else if (message.type === 'candidate' && isStarted) {
     var candidate = new RTCIceCandidate({
@@ -108,6 +110,7 @@ socket.on('message', function(message) {
     });
     pc.addIceCandidate(candidate);
 
+    console.log('========(3)', message);
     console.log('========PC:', pc);
     console.log('========CD:', candidate);
   } 
