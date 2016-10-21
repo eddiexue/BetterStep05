@@ -35,6 +35,12 @@ io.sockets.on('connection', function(socket){
         console.log(content);
     }
 
+    function sendObjToBrowser() {
+        var array = ['Message from server:'];
+        array.push.apply(array, arguments);
+        socket.emit('log', array);
+    }
+
     socket.on('create or join', function(room) {
         log('Received request to create or join room ' + room);
 
@@ -106,6 +112,7 @@ io.sockets.on('connection', function(socket){
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
         var joinedRoom = io.sockets.adapter.rooms[socket.id]
         io.sockets.in(joinedRoom).emit('message', message);
+        sendObjToBrowser(io.sockets.adapter.rooms);
         //io.sockets.in(joinedRoom).send(message);
 
         // for a real app, would be room-only (not broadcast)
