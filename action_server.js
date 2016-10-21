@@ -104,19 +104,11 @@ io.sockets.on('connection', function(socket){
         log('Client(' + socket.id + ') said: ' + message);
         
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
+        //http://www.codeweblog.com/node-js%E4%B8%ADsocket-io%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/
         var joinedRoom = io.sockets.manager.roomClients[socket.id]
-        //io.sockets.in(joinedRoom).emit('message', message);
-        io.sockets.in(joinedRoom).send(message);
+        io.sockets.in(joinedRoom).emit('message', message);
+        //io.sockets.in(joinedRoom).send(message);
 
-        /*
-        if( message === 'got user media')
-        {
-            socket.emit('message', message);
-        }
-        else
-        {
-            socket.broadcast.to(socket.id).emit('message', message);
-        }
         // for a real app, would be room-only (not broadcast)
         // socket.broadcast.emit('message', message);
     });
