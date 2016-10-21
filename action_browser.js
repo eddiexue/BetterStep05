@@ -8,6 +8,10 @@ var pc;
 var remoteStream;
 var turnReady;
 
+var wantHostMode      = false;
+var wantReflexiveMode = false;
+var wantRelayMode     = true;
+
 var pcConfig = {
   'iceServers': [
     //{'url': 'stun:stun.l.google.com:19302'}
@@ -198,7 +202,13 @@ function createPeerConnection() {
 //给房间所有人(包括自己)发消息触发操作
 function handleIceCandidate(event) {
   console.log('icecandidate event: ', event);
-  if (event.candidate) {
+  var ice = event.candidate;
+  if (ice) {
+    if(wantHostMode && ice.candidate.indexOf('typ host') == -1) return;
+    if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) return;
+    if(wantRelayMode && ice.candidate.indexOf('relay') == -1) return;
+    
+    console.log('>>>>>>>>>> selected relay candidate: ', ice);
     sendMessage({
       type: 'candidate',
       label: event.candidate.sdpMLineIndex,
