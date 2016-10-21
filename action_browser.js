@@ -43,7 +43,7 @@ if (room !== '') {
 
 //Server发消息告诉第一个浏览器客户端进房间成功
 socket.on('created', function(room) {
-  console.log('Created room ' + room);
+  console.log('Created room ' + room, socket);
   isInitiator = true;
 });
 
