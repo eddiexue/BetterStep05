@@ -246,7 +246,7 @@ function doAnswer() {
 }
 
 function onCreateSessionDescriptionError(error) {
-  trace('Failed to create session description: ' + error.toString());
+  console.trace('Failed to create session description: ' + error.toString());
 }
 
 function hangup() {
