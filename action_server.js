@@ -106,14 +106,13 @@ io.sockets.on('connection', function(socket){
 
 
     //消息群发功能，将收到的消息广播给房间里所有人？
-    socket.on('message', function(message) {
+    socket.on('message', function(message, roomid) {
         log('Client(' + socket.id + ') said: ' + message);
         
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
-        var joinedRoom = io.sockets.adapter.rooms[socket.id]
-        io.sockets.in(joinedRoom).emit('message', message);
-        sendObjToBrowser(io.sockets.adapter);
-        //io.sockets.in(joinedRoom).send(message);
+        //io.sockets.in(roomid).emit('message', message);
+        //sendObjToBrowser(io.sockets.adapter.rooms);
+        io.sockets.in(roomid).send(message);
 
         // for a real app, would be room-only (not broadcast)
         // socket.broadcast.emit('message', message);

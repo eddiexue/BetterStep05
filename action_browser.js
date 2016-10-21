@@ -71,9 +71,9 @@ socket.on('log', function(array) {
 //到这里进房间完成，信令通信告一段落，开始真正音视频操作
 ////////////////////////////////////////////////
 
-function sendMessage(message) {
+function sendMessage(message, roomid) {
   console.log('[SEND_MSG]: ', message);
-  socket.emit('message', message);
+  socket.emit('message', message, roomid);
 }
 
 // This client receives a message
@@ -120,7 +120,7 @@ function gotStream(stream) {
   console.log('()gotStream()Adding local stream.');
   localVideo.src = window.URL.createObjectURL(stream);
   localStream = stream;
-  sendMessage('got user media');
+  sendMessage('got user media', room);
   if (isInitiator) {
     maybeStart();
   }else{
@@ -159,7 +159,7 @@ function maybeStart() {
 }
 
 window.onbeforeunload = function() {
-  sendMessage('bye');
+  sendMessage('bye', room);
 };
 
 /////////////////////////////////////////////////////////
