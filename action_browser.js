@@ -15,12 +15,12 @@ var wantRelayMode     = true;
  * 打印 JavaScript 函数调用堆栈 
  */  
 function printCallStack() {  
-    var i = 0;  
-    var fun = arguments.callee;  
-    do {  
-      fun = fun.arguments.callee.caller;  
-      console.log(++i + ': ' + fun);  
-    } while (fun);  
+    var e = new Error('dummy');
+    var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+      .replace(/^\s+at\s+/gm, '')
+      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+      .split('\n');
+    console.log(stack);
 }  
 
 var pcConfig = {
@@ -258,7 +258,7 @@ function handleIceCandidate(event)
 }
 
 function handleRemoteStreamAdded(event) {
-  console.log('Remote stream added.');
+  console.log('Remote stream added.', event);
   remoteVideo.src = window.URL.createObjectURL(event.stream);
   remoteStream = event.stream;
 }
