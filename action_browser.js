@@ -7,9 +7,9 @@ var localStream;
 var pc;
 var remoteStream;
 
-var wantHostMode      = false;
+var wantHostMode      = true;
 var wantReflexiveMode = false;
-var wantRelayMode     = true;
+var wantRelayMode     = false;
 
 /* 
  * 打印 JavaScript 函数调用堆栈 
@@ -242,22 +242,22 @@ function handleIceCandidate(event)
   if (ice) {
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) 
     {
-      console.log('wantHostMode='+wantHostMode+', typ host?='+(ice.candidate.indexOf('typ host') == -1) );
+      console.log('[pass]wantHostMode='+wantHostMode+', typ host?='+(ice.candidate.indexOf('typ host') == -1) );
       return;
     }
 
     if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) 
     {
-      console.log('wantReflexiveMode='+wantReflexiveMode+', srflx?='+(ice.candidate.indexOf('srflx') == -1) );
+      console.log('[pass]wantReflexiveMode='+wantReflexiveMode+', srflx?='+(ice.candidate.indexOf('srflx') == -1) );
       return;
     }
 
     if(wantRelayMode && ice.candidate.indexOf('relay') == -1) 
     {
-      console.log('wantRelayMode='+wantRelayMode+', relay?='+(ice.candidate.indexOf('relay') == -1) );
+      console.log('[pass]wantRelayMode='+wantRelayMode+', relay?='+(ice.candidate.indexOf('relay') == -1) );
       return;
     }
-    
+
     console.log('>>>>>>>>>> selected relay candidate: ', ice);
     sendMessage({
       type: 'candidate',
