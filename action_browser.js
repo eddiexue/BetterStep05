@@ -237,20 +237,26 @@ function handleIceCandidate(event)
 {
   var ice = event.candidate;
 
-  console.log('>>>>>>>>>>>>>icecandidate event: ', event.candidate);
-  var e = new Error('dummy');
-    var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
-      .replace(/^\s+at\s+/gm, '')
-      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
-      .split('\n');
-    //console.log(stack);
-    console.log(e.stack);
-  //=======================
+  console.log('>>>>>>>>>>>>>icecandidate event: ', ice);
 
   if (ice) {
-    if(wantHostMode && ice.candidate.indexOf('typ host') == -1) return;
-    if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) return;
-    if(wantRelayMode && ice.candidate.indexOf('relay') == -1) return;
+    if(wantHostMode && ice.candidate.indexOf('typ host') == -1) 
+    {
+      console.log('wantHostMode='+wantHostMode+', typ host?='+(ice.candidate.indexOf('typ host') == -1) );
+      return;
+    }
+
+    if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) 
+    {
+      console.log('wantReflexiveMode='+wantReflexiveMode+', srflx?='+(ice.candidate.indexOf('srflx') == -1) );
+      return;
+    }
+
+    if(wantRelayMode && ice.candidate.indexOf('relay') == -1) 
+    {
+      console.log('wantRelayMode='+wantRelayMode+', relay?='+(ice.candidate.indexOf('relay') == -1) );
+      return;
+    }
     
     console.log('>>>>>>>>>> selected relay candidate: ', ice);
     sendMessage({
