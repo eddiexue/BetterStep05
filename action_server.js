@@ -107,7 +107,7 @@ io.sockets.on('connection', function(socket){
 
     //消息群发功能，将收到的消息广播给房间里所有人
     socket.on('message', function(message, roomid) {
-        log('Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "object"? message.type : message) );
+        log('Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "string"? message : message.type) );
         
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
         //注意只有一个人进房间的时候触发不了下一步操作，另一个人进来之后还会在房间内群发，这时候才能触发下一步操作
