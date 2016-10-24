@@ -121,13 +121,13 @@ io.sockets.on('connection', function(socket){
 
     //只把消息回给发件人自己
     socket.on('message_self_remind', function(message, roomid) {
-        log('Client(' + socket.id + ') remind: ' + message);
+        log('Client(' + socket.id + ')('+ typeof message +') remind: ' + (typeof message === "string"? message : message.type) );
         socket.emit('message', message);
     });
 
     //把消息发给房间除了自己以外的其他人
     socket.on('message_to_others', function(message, roomid) {
-        log('Client(' + socket.id + ') to others: ' + message);
+        log('Client(' + socket.id + ')('+ typeof message +') to others: ' + (typeof message === "string"? message : message.type) );
         socket.broadcast.to(roomid).send(message);
     });
 
