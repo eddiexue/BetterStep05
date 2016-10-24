@@ -105,7 +105,7 @@ io.sockets.on('connection', function(socket){
     });
 
 
-    //消息群发功能，将收到的消息广播给房间里所有人？
+    //消息群发功能，将收到的消息广播给房间里所有人
     socket.on('message', function(message, roomid) {
         log('Client(' + socket.id + ') said: ' + message);
         
@@ -117,6 +117,18 @@ io.sockets.on('connection', function(socket){
 
         // for a real app, would be room-only (not broadcast)
         // socket.broadcast.emit('message', message);
+    });
+
+    //只把消息回给发件人自己
+    socket.on('message_self_remind', function(message, roomid) {
+        log('Client(' + socket.id + ') remind: ' + message);
+        socket.emit('message', message);
+    });
+
+    //把消息发给房间除了自己以外的其他人
+    socket.on('message_to_others', function(message, roomid) {
+        log('Client(' + socket.id + ') to others: ' + message);
+        socket.broadcast.to(roomid).send(message);
     });
 
 });
