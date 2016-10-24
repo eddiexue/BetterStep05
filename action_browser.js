@@ -11,6 +11,18 @@ var wantHostMode      = false;
 var wantReflexiveMode = false;
 var wantRelayMode     = true;
 
+/* 
+ * 打印 JavaScript 函数调用堆栈 
+ */  
+function printCallStack() {  
+    var i = 0;  
+    var fun = arguments.callee;  
+    do {  
+      fun = fun.arguments.callee.caller;  
+      console.log(++i + ': ' + fun);  
+    } while (fun);  
+}  
+
 var pcConfig = {
   'iceServers': [
     //{'url': 'stun:stun.l.google.com:19302'},
@@ -103,7 +115,7 @@ socket.on('message', function(message) {
   if (message === 'got user media') {
     maybeStart();
   } 
-  else if (message.type === 'offer') {//adapter.js里会发这种类型的消息，由被邀请方发出
+  else if (message.type === 'offer') {//setLocalAndSendMessage会offer对方
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
@@ -181,7 +193,6 @@ function maybeStart() {
     createPeerConnection();
     pc.addStream(localStream);
     isStarted = true;
-    console.log('isInitiator', isInitiator);
     if (isInitiator) {
       doCall();
     }
@@ -222,9 +233,13 @@ function createPeerConnection() {
 }
 
 //给房间所有人(包括自己)发消息触发操作
-function handleIceCandidate(event) {
-  console.log('icecandidate event: ', event.candidate);
+function handleIceCandidate(event) 
+{
   var ice = event.candidate;
+
+  console.log('>>>>>>>>>>>>>icecandidate event: ', event.candidate);
+  printCallStack();
+
   if (ice) {
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) return;
     if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) return;
