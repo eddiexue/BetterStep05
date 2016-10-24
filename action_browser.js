@@ -232,7 +232,6 @@ function createPeerConnection() {
   }
 }
 
-//给房间所有人(包括自己)发消息触发操作
 function handleIceCandidate(event) 
 {
   var ice = event.candidate;
@@ -259,7 +258,7 @@ function handleIceCandidate(event)
     }
 
     console.log('>>>>>>>>>> selected relay candidate: ', ice);
-    sendMessage({
+    sendMsgToOthers({
       type: 'candidate',
       label: event.candidate.sdpMLineIndex,
       id: event.candidate.sdpMid,
