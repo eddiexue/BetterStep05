@@ -247,7 +247,6 @@ function handleIceCandidate(event)
     console.log(e.stack);
   //=======================
 
-
   if (ice) {
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) return;
     if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) return;
@@ -285,7 +284,8 @@ function setLocalAndSendMessage(sessionDescription) {
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   console.log('setLocalAndSendMessage sending message', sessionDescription);
-  sendMessage(sessionDescription, room);
+  //sendMessage(sessionDescription, room);
+  sendMsgToOthers(sessionDescription, room);
 }
 
 function handleCreateOfferError(event) {
