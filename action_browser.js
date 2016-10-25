@@ -7,9 +7,9 @@ var localStream;
 var pc;
 var remoteStream;
 
-var wantHostMode      = true;
+var wantHostMode      = false;
 var wantReflexiveMode = false;
-var wantRelayMode     = false;
+var wantRelayMode     = true;
 
 /* 
  * 打印 JavaScript 函数调用堆栈 
