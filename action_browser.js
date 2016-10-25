@@ -282,7 +282,7 @@ function setLocalAndSendMessage(sessionDescription) {
   // Set Opus as the preferred codec in SDP if Opus is present.
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
-  console.log('setLocalAndSendMessage sending message', sessionDescription);
+  console.log('setLocalAndSendMessage() sending message');
   //sendMessage(sessionDescription, room);
   sendMsgToOthers(sessionDescription, room);
 }
