@@ -25,6 +25,7 @@ function printCallStack() {
 
 var pcConfig = {
   'iceServers': [
+    /*
     //{'url': 'stun:stun.l.google.com:19302'},
     {
       //'url': 'turn:183.60.1.158:3478?transport=udp',
@@ -36,9 +37,19 @@ var pcConfig = {
       'url': 'turn:119.29.28.242:3478?transport=tcp',
       'credential': 'testpassword',
       'username': 'testqq'
-    }
+    },
+    */
+    {     
+     "urls": [
+       "turn:119.29.28.242:3478?transport=udp"
+     ], 
+     "username": "1477536990:helloword",
+     "credential": "zCdpwQZPq4U51sC55YU6Qhd2BRM="
+   }
   ]
 };
+
+
 
 // Set up audio and video regardless of what devices are present.
 var sdpConstraints = {
