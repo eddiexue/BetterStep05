@@ -25,20 +25,18 @@ function printCallStack() {
 
 var pcConfig = {
   'iceServers': [
-    /*
-    //{'url': 'stun:stun.l.google.com:19302'},
     {
-      //'url': 'turn:183.60.1.158:3478?transport=udp',
       'url': 'turn:119.29.28.242:3478?transport=udp',
-      'credential': 'testpassword',
-      'username': 'testqq'
+      'username': "1477536990:helloword",
+      'credential': "zCdpwQZPq4U51sC55YU6Qhd2BRM="
     },
     {
       'url': 'turn:119.29.28.242:3478?transport=tcp',
       'credential': 'testpassword',
       'username': 'testqq'
-    },
-    */
+    }
+    //{'url': 'stun:stun.l.google.com:19302'},
+    /*
     {     
      "urls": [
        "turn:119.29.28.242:3478?transport=udp"
@@ -46,6 +44,7 @@ var pcConfig = {
      "username": "1477536990:helloword",
      "credential": "zCdpwQZPq4U51sC55YU6Qhd2BRM="
    }
+   */
   ]
 };
 
@@ -179,10 +178,6 @@ var constraints = {
   video: true
 };
 
-console.log('2. Getting user media with constraints', constraints);
-console.log('2. isInitiator=', isInitiator);
-console.log('2. location.hostname=', location.hostname);
-
 if (location.hostname !== 'localhost') {
   requestTurn(
     'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
@@ -215,7 +210,7 @@ function requestTurn(turnURL){
   for (var i in pcConfig.iceServers) {
     if (pcConfig.iceServers[i].url.substr(0, 5) === 'turn:') {
       turnExists = true;
-      console.log('()requestTurn()', pcConfig.iceServers[i]);
+      console.log('requestTurn()', pcConfig.iceServers[i]);
       break;
     }
   }
