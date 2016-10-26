@@ -2,23 +2,6 @@
  /* eslint-env node */
 'use strict';
 
-var pcConfig = {
-  'iceServers': [
-    //{'url': 'stun:stun.l.google.com:19302'},
-    {
-      //'url': 'turn:183.60.1.158:3478?transport=udp',
-      'url': 'turn:119.29.28.242:3478?transport=udp',
-      'credential': 'testpassword',
-      'username': 'testqq'
-    },
-    {
-      'url': 'turn:119.29.28.242:3478?transport=udp',
-      'credential': 'testpassword',
-      'username': 'testqq'
-    }
-  ]
-};
-
 // SDP helpers.
 var SDPUtils = {};
 

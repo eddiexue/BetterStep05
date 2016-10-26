@@ -214,7 +214,7 @@ function requestTurn(turnURL){
 
 function createPeerConnection() {
   try {
-    pc = new RTCPeerConnection(null);
+    pc = new RTCPeerConnection(pcConfig);
     pc.onicecandidate = handleIceCandidate;
     pc.onaddstream = handleRemoteStreamAdded;
     pc.onremovestream = handleRemoteStreamRemoved;
@@ -247,7 +247,7 @@ function handleIceCandidate(event)
 
     if(wantRelayMode && ice.candidate.indexOf('relay') == -1) 
     {
-      console.log('[pass]wantRelayMode='+wantRelayMode+', relay?='+(ice.candidate.indexOf('relay') == -1) );
+      console.log('[pass]wantRelayMode='+wantRelayMode+', can relay?='+(ice.candidate.indexOf('relay') != -1) );
       return;
     }
 
