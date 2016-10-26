@@ -25,13 +25,11 @@ function printCallStack() {
 
 var pcConfig = {
   'iceServers': [
-    /*
     {
       'url': 'turn:119.29.28.242:3478?transport=udp',
-      'username': "1477536990:helloword",
-      'credential': "zCdpwQZPq4U51sC55YU6Qhd2BRM="
+      'username': "1509020397:helloword",
+      'credential': "+SLiebXF1e6o+R09Peu2yteQCnY="
     },
-    */
     {
       'url': 'turn:119.29.28.242:3478?transport=tcp',
       'credential': 'testpassword',
