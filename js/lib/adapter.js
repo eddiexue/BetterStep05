@@ -1208,6 +1208,7 @@ var edgeShim = {
           }
         }
       });
+      console.log('------------------_emitBufferedCandidates()', _localIceCandidatesBuffer)
       this._localIceCandidatesBuffer = [];
     };
 

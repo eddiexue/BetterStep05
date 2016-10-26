@@ -188,7 +188,7 @@ function maybeStart() {
     pc.addStream(localStream);
     isStarted = true;
     if (isInitiator) {
-      //doCall();
+      doCall();
     }
   }
 }
@@ -260,9 +260,6 @@ function handleIceCandidate(event)
     }, room);
   } else {
     console.log('End of candidates.');
-    if (isInitiator) {
-      doCall();
-    }
   }
 }
 
