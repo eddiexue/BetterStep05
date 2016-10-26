@@ -33,7 +33,7 @@ var pcConfig = {
       'username': 'testqq'
     },
     {
-      'url': 'turn:119.29.28.242:3478?transport=udp',
+      'url': 'turn:119.29.28.242:3478?transport=tcp',
       'credential': 'testpassword',
       'username': 'testqq'
     }
