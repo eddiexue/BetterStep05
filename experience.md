@@ -19,3 +19,6 @@
   1. 启动Chrome时设定参数：/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --unsafely-treat-insecure-origin-as-secure="http://119.29.28.242:8080" --user-data-dir=/Users/eddiexue/Tencent/Projects/rtclab，注意两个参数缺一不可，第二个参数主要用于指定Chrome的数据缓存目录
 
 到这一步好运气基本用完，由于webrtc和后端node.js的api都是基于JavaScript的，不熟悉一下语法寸步难行，于是下载《JavaScript高级程序设计(第3版)》、《JavaScript语言精粹（修订版）》先看几天。熟悉完语法，就可以着手准备webrtc中转模式了。
+
+chrome://version/，可以查看chrome启动的命令行参数和可执行文件目录
+可以参考start_chrome.sh的方式启动chrome，可以多打出一些信息，不过还要进一步研究研究
