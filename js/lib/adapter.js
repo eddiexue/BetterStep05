@@ -693,8 +693,6 @@ var chromeShim = {
         pcConfig.iceTransports = pcConfig.iceTransportPolicy;
       }
 
-      console.log('<<<<<<<<<<<<>>>>>>>>>>pcConfig=', pcConfig);
-
       var pc = new webkitRTCPeerConnection(pcConfig, pcConstraints);
       var origGetStats = pc.getStats.bind(pc);
       pc.getStats = function(selector, successCallback, errorCallback) {
