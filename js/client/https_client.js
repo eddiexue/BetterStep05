@@ -116,17 +116,16 @@ function gotStream(stream)
 
 function maybeStart() 
 {
-  console.log('>>>>>>> maybeStart() '+ 'isStarted?'+isStarted+','+', localStream?'+(typeof localStream)+', isChannelReady?'+isChannelReady);
+  console.log('>>>>>> maybeStart() '+ 'isStarted?'+isStarted+','+', localStream?'+(typeof localStream)+', isChannelReady?'+isChannelReady);
 
   if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) 
   {
-    console.log('>>>>>> creating peer connection');
     createPeerConnection();
     pc.addStream(localStream);
     isStarted = true;
     if (isInitiator) 
     {
-      doCall();
+      doOffer();
     }
   }
 }
@@ -202,13 +201,14 @@ function createPeerConnection()
 function handleIceCandidate(event) 
 {
   var ice = event.candidate;
-  var isHost = (ice.candidate.indexOf('typ host') !== -1);
-  var isSrflx = (ice.candidate.indexOf('srflx') !== -1);
-  var isRelay = (ice.candidate.indexOf('relay') !== -1);
-  var candidateType = isHost?'host':(isSrflx?'srflx':'relay');
 
   if (ice) 
   {
+    var isHost = (ice.candidate.indexOf('typ host') !== -1);
+    var isSrflx = (ice.candidate.indexOf('srflx') !== -1);
+    var isRelay = (ice.candidate.indexOf('relay') !== -1);
+    var candidateType = isHost?'host':(isSrflx?'srflx':'relay');
+
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) 
     {
       console.log('>>>>>> handleIceCandidate(event) pass candidate ['+candidateType + ']');
@@ -251,9 +251,9 @@ function handleRemoteStreamRemoved(event) {
   console.log('>>>>>> handleRemoteStreamRemoved(event) Remote stream removed. Event: ', event);
 }
 
-function doCall() 
+function doOffer() 
 {
-  console.log('>>>>>> doCall(): Sending offer to peer');
+  console.log('>>>>>> doOffer(): Sending offer to peer');
   pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 }
 

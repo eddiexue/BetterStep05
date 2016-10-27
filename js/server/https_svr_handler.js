@@ -67,7 +67,7 @@ io.sockets.on('connection', function(socket)
             console.log('[On Join] Client[' + socket.id + '] joined room ' + room);
 
             //知会房间里的所有人准备就绪，但是貌似没啥用
-            io.sockets.in(room).emit('ready');
+            io.sockets.in(room).emit('ready', room);
             console.log('[On Join] Send READY signal for all clients ('+ numClients +') in room: ' + room);
         } 
         //暂时只支持两人连麦
