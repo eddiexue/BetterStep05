@@ -94,7 +94,8 @@ socket.on('join', function (room){
 });
 
 //人齐了，可以开工了
-socket.on('ready', function(room) {
+socket.on('ready', function(room, pccfg) {
+  pcConfig = pccfg;
   isChannelReady = true;
   console.log('[OnReady] Signal channel is ready for room: ' + room);
   maybeStart();

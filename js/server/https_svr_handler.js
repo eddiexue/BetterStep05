@@ -39,9 +39,15 @@ var pcConfig = {
   ]
 };
 
-console.log('username='+pcConfig.iceServers[0].username);
-console.log('credential='+pcConfig.iceServers[0].credential);
-console.log('credential2='+crypto.createHmac('sha1', turn_static_auth_secret).update('1509020397:helloword').digest().toString('base64'));
+console.log('creating turnserver secure secret...');
+for(var i in pcConfig.iceServers.length)
+{
+    console.log('url['+i+']='+pcConfig.iceServers[i].url);
+    console.log('username['+i+']='+pcConfig.iceServers[i].username);
+    console.log('credential['+i+']='+pcConfig.iceServers[i].credential);
+}
+console.log('-----------------------------------');
+
 
 //为了测试，本地cache尽快更新; 把index.html改个名字试试
 var requestHandler = new nodeStatic.Server( {cache: 1, indexFile: 'index.html'} );
@@ -87,7 +93,7 @@ io.sockets.on('connection', function(socket)
             console.log('[On Join] Client[' + socket.id + '] joined room ' + room);
 
             //知会房间里的所有人准备就绪，但是貌似没啥用
-            io.sockets.in(room).emit('ready', room);
+            io.sockets.in(room).emit('ready', room, pcConfig);
             console.log('[On Join] Send READY signal for all clients ('+ numClients +') in room: ' + room);
         } 
         //暂时只支持两人连麦
