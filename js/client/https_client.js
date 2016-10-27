@@ -116,7 +116,7 @@ function gotStream(stream)
 
 function maybeStart() 
 {
-  console.log('>>>>>> maybeStart() '+ 'isStarted?'+isStarted+','+', localStream?'+(typeof localStream)+', isChannelReady?'+isChannelReady);
+  console.log('>>>>>> maybeStart() '+ 'isStarted?'+isStarted +', localStream?'+(typeof localStream)+', isChannelReady?'+isChannelReady);
 
   if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) 
   {
@@ -125,7 +125,7 @@ function maybeStart()
     isStarted = true;
     if (isInitiator) 
     {
-      doOffer();
+      //doOffer();
     }
   }
 }
