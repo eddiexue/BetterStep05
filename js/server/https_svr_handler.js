@@ -50,9 +50,9 @@ var pcConfig = {
 console.log('creating turnserver secure secret...');
 for(var i=0 ; i < pcConfig.iceServers.length; i++)
 {
-    console.log('url['+i+']='+pcConfig.iceServers[i].url);
-    console.log('username['+i+']='+pcConfig.iceServers[i].username);
-    console.log('credential['+i+']='+pcConfig.iceServers[i].credential);
+    console.log('url['+i+']=        '+pcConfig.iceServers[i].url);
+    console.log('username['+i+']=   '+pcConfig.iceServers[i].username);
+    console.log('credential['+i+']= '+pcConfig.iceServers[i].credential);
 }
 console.log('-----------------------------------');
 
