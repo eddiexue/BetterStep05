@@ -1,7 +1,7 @@
 {
-  "name": "simple-webrtc",
+  "name": "simple-avchat-room",
   "version": "0.0.1",
-  "description": "simple-webrtc",
+  "description": "simple-avchat-room",
   "dependencies": 
   {
     "node-static": ">=0.7.9",

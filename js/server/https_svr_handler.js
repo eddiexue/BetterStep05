@@ -2,14 +2,25 @@
 
 var os = require('os');
 var fs = require('fs');
-var https = require('https'); //由于浏览器都必须https了，所以这里也要换成https
-var nodeStatic = require('node-static');
-var socketIO = require('socket.io');
+var path = require('path');
 var crypto = require('crypto');
+
+var https = require('https'); //由于浏览器都必须https了，所以这里也要换成https
+var nodeStatic = require('node-static');//httpsvr的实现，简化处理逻辑
+var socketIO = require('socket.io');//用来实现房间和多人聊天
+
+
+console.log(__dirname);
+console.log(__filename);
+console.log(process.cwd());
+console.log(path.resolve('./'));
+
+
+
 
 
 var options = {  
-    key: fs.readFileSync('./cert/privatekey.pem'),  
+    key: fs.readFileSync('../cert/privatekey.pem'),  
     cert: fs.readFileSync('./cert/certificate.pem')  
 };
 

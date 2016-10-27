@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <title>Simple AVChatRoom</title>
+
+  <link rel="stylesheet" href="/css/main.css" />
+
+  <!-- 让页面显示中文不乱码 -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+</head>
+
+<body>
+
+  <h1>Simple AVChatRoom</h1>
+
+  <div id="videos">
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/lib/adapter.js"></script>
+  <script src="js/client/https_client.js"></script>
+
+</body>
+
+</html>
