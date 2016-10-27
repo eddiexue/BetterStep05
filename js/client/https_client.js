@@ -125,7 +125,8 @@ function maybeStart()
     isStarted = true;
     if (isInitiator) 
     {
-      //doOffer();
+      //这个动作很重要，分别是本地筛选candidate，以及发送offer信令给到对方
+      doOffer();
     }
   }
 }
@@ -237,10 +238,6 @@ function handleIceCandidate(event)
 
   } 
   else {
-    if (isInitiator) 
-    {
-      doOffer();
-    }
     console.log('>>>>>> handleIceCandidate(event) End of candidates.');
   }
 }
