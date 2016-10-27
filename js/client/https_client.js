@@ -62,7 +62,7 @@ if (room !== '')
 }
 
 socket.on('created', function(room) {
-  console.log('[On] Created room ' + room, socket);
+  console.log('[OnCreate] Created room ' + room, socket);
   isInitiator = true;
 });
 
@@ -70,8 +70,8 @@ socket.on('created', function(room) {
 socket.on('join', function (room){
   if( isInitiator )
   {
-    console.log('[On] Another peer made a request to join room ' + room);
-    console.log('[On] This peer is the initiator of room ' + room + '!');
+    console.log('[OnJoin] Another peer made a request to join room ' + room);
+    console.log('[OnJoin] This peer is the initiator of room ' + room + '!');
   }
   isChannelReady = true;
 });
@@ -79,11 +79,12 @@ socket.on('join', function (room){
 //人齐了，可以开工了
 socket.on('ready', function(room) {
   isChannelReady = true;
-  console.log('[On] Signal channel is ready for room: ' + room);
+  console.log('[OnReady] Signal channel is ready for room: ' + room);
+  maybeStart();
 });
 
 socket.on('full', function(room) {
-  console.log('Room ' + room + ' is full');
+  console.log('[OnFull] Room ' + room + ' is full');
 });
 
 socket.on('log', function(array) {
@@ -108,41 +109,31 @@ function gotStream(stream)
 {
   localVideo.src = window.URL.createObjectURL(stream);
   localStream = stream;
-  sendMessage('got user media', room);
   if (isInitiator) {
     maybeStart();
-  }else{
-    console.log('()gotStream() isInitiator is false，so maybeStart() not called');
   }
 }
 
-var constraints = {
-  video: true
-};
+function maybeStart() 
+{
+  console.log('>>>>>>> maybeStart() '+ 'isStarted?'+isStarted+','+', localStream?'+(typeof localStream)+', isChannelReady?'+isChannelReady);
 
-if (location.hostname !== 'localhost') {
-  requestTurn(
-    'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-  );
-}
-
-function maybeStart() {
-  console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
-
-  //房间只有一个人的时候，isChannelReady===false，所以进不来
-  if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
+  if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) 
+  {
     console.log('>>>>>> creating peer connection');
     createPeerConnection();
     pc.addStream(localStream);
     isStarted = true;
-    if (isInitiator) {
+    if (isInitiator) 
+    {
       doCall();
     }
   }
 }
 
-window.onbeforeunload = function() {
-  sendMessage('bye', room);
+window.onbeforeunload = function() 
+{
+  sendMsgToOthers('bye', room);
 };
 
 /////////////////////////////////////////////////////////
@@ -150,57 +141,59 @@ window.onbeforeunload = function() {
 //到这里进房间完成，信令通信告一段落，开始真正音视频操作
 socket.on('message', function(message) 
 {
-  console.log('[RECV_MSG]['+message.type+']', message);
+  console.log('[OnMessage]['+message.type+']', message);
   
-  if (message === 'got user media') {
-    maybeStart();
-  } 
-  else if (message.type === 'offer') {//setLocalAndSendMessage会offer对方
-    if (!isInitiator && !isStarted) {
+  if (message.type === 'offer') 
+  {
+    if (!isInitiator && !isStarted) 
+    {
       maybeStart();
     }
     pc.setRemoteDescription(new RTCSessionDescription(message));
     doAnswer();
   } 
-  else if (message.type === 'answer' && isStarted) {
+  else if (message.type === 'answer' && isStarted) 
+  {
     pc.setRemoteDescription(new RTCSessionDescription(message));
   } 
-  else if (message.type === 'candidate' && isStarted) {
-    var candidate = new RTCIceCandidate({
-      sdpMLineIndex: message.label,
-      candidate: message.candidate
-    });
-    pc.addIceCandidate(candidate);
+  else if (message.type === 'candidate' ) 
+  {
+    if( isStarted )
+    {
+      var candidate = new RTCIceCandidate({
+        sdpMLineIndex: message.label,
+        candidate: message.candidate
+      });
+      pc.addIceCandidate(candidate);
+    }
+    else
+    {
+      console.log('[OnMessage]['+message.type+'] not start ?!!!');
+    }
   } 
-  else if (message === 'bye' && isStarted) {
+  else if (message === 'bye' && isStarted) 
+  {
     handleRemoteHangup();
+  }
+  else
+  {
+    console.log('[OnMessage]['+message.type+'] unknown msg:', message);
   }
   
 });
 
-
-function requestTurn(turnURL){
-  var turnExists = false;
-  for (var i in pcConfig.iceServers) {
-    if (pcConfig.iceServers[i].url.substr(0, 5) === 'turn:') {
-      turnExists = true;
-      console.log('requestTurn()', pcConfig.iceServers[i]);
-      break;
-    }
-  }
-}
-
 /////////////////////////////////////////////////////////
 
-function createPeerConnection() {
+function createPeerConnection() 
+{
   try {
     pc = new RTCPeerConnection(pcConfig);
     pc.onicecandidate = handleIceCandidate;
     pc.onaddstream = handleRemoteStreamAdded;
     pc.onremovestream = handleRemoteStreamRemoved;
-    console.log('>>>>>> Created RTCPeerConnnection', pc);
+    console.log('>>>>>> createPeerConnection()', pc);
   } catch (e) {
-    console.log('Failed to create PeerConnection, exception: ' + e.message);
+    console.log('>>>>>> createPeerConnection() Failed to create PeerConnection, exception: ' + e.message);
     alert('Cannot create RTCPeerConnection object.');
     return;
   }
@@ -209,61 +202,75 @@ function createPeerConnection() {
 function handleIceCandidate(event) 
 {
   var ice = event.candidate;
+  var isHost = (ice.candidate.indexOf('typ host') !== -1);
+  var isSrflx = (ice.candidate.indexOf('srflx') !== -1);
+  var isRelay = (ice.candidate.indexOf('relay') !== -1);
+  var candidateType = isHost?'host':(isSrflx?'srflx':'relay');
 
-  console.log('>>>>>>>>>>>>>icecandidate event: ', ice);
-
-  if (ice) {
+  if (ice) 
+  {
     if(wantHostMode && ice.candidate.indexOf('typ host') == -1) 
     {
-      console.log('[pass]wantHostMode='+wantHostMode+', typ host?='+(ice.candidate.indexOf('typ host') == -1) );
+      console.log('>>>>>> handleIceCandidate(event) pass candidate ['+candidateType + ']');
       return;
     }
 
     if(wantReflexiveMode && ice.candidate.indexOf('srflx') == -1) 
     {
-      console.log('[pass]wantReflexiveMode='+wantReflexiveMode+', srflx?='+(ice.candidate.indexOf('srflx') == -1) );
+      console.log('>>>>>> handleIceCandidate(event) pass candidate ['+candidateType + ']');
       return;
     }
 
     if(wantRelayMode && ice.candidate.indexOf('relay') == -1) 
     {
-      console.log('[pass]wantRelayMode='+wantRelayMode+', can relay?='+(ice.candidate.indexOf('relay') != -1) );
+      console.log('>>>>>> handleIceCandidate(event) pass candidate ['+candidateType + ']');
       return;
     }
 
-    console.log('>>>>>>>>>> selected relay candidate: ', ice);
+    console.log('>>>>>> handleIceCandidate(event) selected candidate: ', ice);
     sendMsgToOthers({
       type: 'candidate',
       label: event.candidate.sdpMLineIndex,
       id: event.candidate.sdpMid,
       candidate: event.candidate.candidate
     }, room);
-  } else {
-    console.log('End of candidates.');
+
+  } 
+  else {
+    console.log('>>>>>> handleIceCandidate(event) End of candidates.');
   }
 }
 
 function handleRemoteStreamAdded(event) {
-  console.log('Remote stream added.', event);
+  console.log('>>>>>> handleRemoteStreamAdded(event) Remote stream added.', event);
   remoteVideo.src = window.URL.createObjectURL(event.stream);
   remoteStream = event.stream;
 }
 
 function handleRemoteStreamRemoved(event) {
-  console.log('Remote stream removed. Event: ', event);
+  console.log('>>>>>> handleRemoteStreamRemoved(event) Remote stream removed. Event: ', event);
 }
 
-function doCall() {
-  console.log('doCall(): Sending offer to peer');
+function doCall() 
+{
+  console.log('>>>>>> doCall(): Sending offer to peer');
   pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 }
 
-function setLocalAndSendMessage(sessionDescription) {
+function doAnswer() 
+{
+  console.log('>>>>>> doAnswer(): Sending answer to peer.');
+  pc.createAnswer().then(
+    setLocalAndSendMessage,
+    onCreateSessionDescriptionError
+  );
+}
+
+function setLocalAndSendMessage(sessionDescription)
+{
   // Set Opus as the preferred codec in SDP if Opus is present.
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
-  console.log('setLocalAndSendMessage() sending message');
-  //sendMessage(sessionDescription, room);
   sendMsgToOthers(sessionDescription, room);
 }
 
@@ -271,26 +278,19 @@ function handleCreateOfferError(event) {
   console.log('createOffer() error: ', event);
 }
 
-function doAnswer() {
-  console.log('()doAnswer(): Sending answer to peer.');
-  pc.createAnswer().then(
-    setLocalAndSendMessage,
-    onCreateSessionDescriptionError
-  );
-}
-
 function onCreateSessionDescriptionError(error) {
   console.trace('Failed to create session description: ' + error.toString());
 }
 
+//主动挂断？本例中无此功能
 function hangup() {
-  console.log('Hanging up.');
+  console.log('>>>>>> Hanging up.');
   stop();
-  sendMessage('bye', room);
+  sendMsgToOthers('bye', room);
 }
 
 function handleRemoteHangup() {
-  console.log('Session terminated.');
+  console.log('>>>>>> handleRemoteHangup(): Session terminated.');
   stop();
   isInitiator = false;
 }
@@ -301,6 +301,7 @@ function stop() {
   // isVideoMuted = false;
   pc.close();
   pc = null;
+  console.log('>>>>>> stop().');
 }
 
 ///////////////////////////////////////////

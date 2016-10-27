@@ -89,10 +89,6 @@ io.sockets.on('connection', function(socket)
         }
     });
 
-    socket.on('bye', function(room){
-        console.log('[On Bye] Received bye from ' + socket.id + 'in room:' + room);
-    });
-
     //消息群发功能，将收到的消息广播给房间里所有人，包括发送者自己
     socket.on('message', function(message, roomid) {
         io.sockets.in(roomid).send(message);
