@@ -52,6 +52,7 @@ io.sockets.on('connection', function(socket)
         var numClients = -1;
         try {
             numClients = io.sockets.adapter.rooms[room].length;
+            console.log(io.sockets.adapter.rooms[room]);
         } catch (error) {
             //房间里没人的话，rooms[room]数组是空的，所以调用.length会抛异常
             numClients = 0;
@@ -60,14 +61,14 @@ io.sockets.on('connection', function(socket)
         if (numClients === 0) 
         {
             socket.join(room);
-            log('Client ID ' + socket.id + ' created room ' + room);
+            console.log('Client ID ' + socket.id + ' created room ' + room);
             
             //因为前面join了，所以这里的socket就应该和io.sockets.in(room)返回值一样？
             socket.emit('created', room, socket.id);
         } 
         else if (numClients === 1) 
         {
-            log('Client ID ' + socket.id + ' joined room ' + room);
+            console.log('Client ID ' + socket.id + ' joined room ' + room);
             //这条消息在join之前，所以只有第一个进来的那边能收到
             io.sockets.in(room).emit('join', room);
             
@@ -86,7 +87,7 @@ io.sockets.on('connection', function(socket)
         
         //再看看有多少人连上来了
         numClients = io.sockets.adapter.rooms[room].length;
-        log('Room ' + room + ' now has ' + numClients + ' client(s)');
+        console.log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
     });
 
@@ -109,7 +110,7 @@ io.sockets.on('connection', function(socket)
 
     //消息群发功能，将收到的消息广播给房间里所有人
     socket.on('message', function(message, roomid) {
-        log('Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "string"? message : message.type) );
+        console.log('Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "string"? message : message.type) );
         
         //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
         //注意只有一个人进房间的时候触发不了下一步操作，另一个人进来之后还会在房间内群发，这时候才能触发下一步操作
@@ -123,13 +124,13 @@ io.sockets.on('connection', function(socket)
 
     //只把消息回给发件人自己
     socket.on('message_self_remind', function(message, roomid) {
-        log('Client(' + socket.id + ')('+ typeof message +') remind: ' + (typeof message === "string"? message : message.type) );
+        console.log('Client(' + socket.id + ')('+ typeof message +') remind: ' + (typeof message === "string"? message : message.type) );
         socket.emit('message', message);
     });
 
     //把消息发给房间除了自己以外的其他人
     socket.on('message_to_others', function(message, roomid) {
-        log('Client(' + socket.id + ')('+ typeof message +') to others: ' + (typeof message === "string"? message : message.type) );
+        console.log('Client(' + socket.id + ')('+ typeof message +') to others: ' + (typeof message === "string"? message : message.type) );
         socket.broadcast.to(roomid).send(message);
     });
 
