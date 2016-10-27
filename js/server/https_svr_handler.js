@@ -48,14 +48,7 @@ io.sockets.on('connection', function(socket)
 
     socket.on('join', function(room) {
         console.log(socket.id + ' request to join room ' + room );
-        console.log(io.sockets.adapter.rooms[room]);
-        var numClients = -1;
-        try {
-            numClients = io.sockets.adapter.rooms[room].length;
-        } catch (error) {
-            //房间里没人的话，rooms[room]数组是空的，所以调用.length会抛异常
-            numClients = 0;
-        }
+        var numClients = (undefined === io.sockets.adapter.rooms[room] ? 0 : io.sockets.adapter.rooms[room].length;
         
         if (numClients === 0) 
         {

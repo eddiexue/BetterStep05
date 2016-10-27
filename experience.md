@@ -23,4 +23,9 @@
 chrome://version/，可以查看chrome启动的命令行参数和可执行文件目录
 可以参考start_chrome.sh的方式启动chrome，可以多打出一些信息，不过还要进一步研究研究
 
- VSC的使用指南，参考http://code.visualstudio.com/docs/editor/codebasics
+VSC的使用指南，参考http://code.visualstudio.com/docs/editor/codebasics
+
+STUN/TURN配置
+1、必须全面支持安全设置
+2、使用realm域
+3、必须启用use-auth-secret，并搭配加密秘钥static-auth-secret=4080218913，用户名:密码的形式不再可用
