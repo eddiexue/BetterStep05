@@ -23,6 +23,24 @@ var secure_options = {
     cert: fs.readFileSync( workspaceDir+'/cert/certificate.pem')  
 };
 
+var turn_static_auth_secret = '4080218913';
+var turn_usercombo = ((new Date()).valueOf()/1000+86400*3650)+':'+'eddiexue';
+var turn_password = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
+
+var pcConfig = {
+  'iceServers': [
+    {
+      'url': 'turn:119.29.28.242:3478?transport=udp',
+      'username': turn_usercombo,
+      'credential': turn_password
+    }
+    //,{'url': 'stun:stun.l.google.com:19302'},
+  ]
+};
+
+console.log('username='+pcConfig.iceServers[0].username);
+console.log('credential='+pcConfig.iceServers[0].credential);
+
 //为了测试，本地cache尽快更新; 把index.html改个名字试试
 var requestHandler = new nodeStatic.Server( {cache: 1, indexFile: 'index.html'} );
 

@@ -1,5 +1,19 @@
 'use strict';
 
+/**
+ * 整体流程大致描述如下：
+ * 1、第一个用户通过join信令创建房间，收到server下发的push消息（created），设置自身状态（isInitiator=true），打开摄像头（getUserMedia、maybeStart）
+ * 2、第二个用户通过join信令进入房间，收到server下发的push消息（join），打开摄像头（getUserMedia、maybeStart）
+ * 3、Server给二人下发push消息（ready），两边各自设置通道准备完毕（isChannelReady = true;），开始启动后续动作（maybeStart）
+ * * 注意：两个客户端打开摄像头(getUserMedia)与信令通道准备是并行操作，且必须二者都完成才能进行下一步，所以打开摄像头结束和通道准备就绪之后都要尝试maybeStart
+ * 4、第一个用户向第二个用户发offer信令（SDP）
+ * 5、第二个用户向第一个用户回answer信令（SDP）
+ * 6、第二个用户向第一个用户发送Candidate
+ * 7、第一个用户向第二个用户发送Caddidate
+ * 8、开始音视频通话
+ * * 注意：这里私底下就是STUN过程和TURN过程，用wireshark抓包可以看到细节
+ */
+
 var isInitiator = false;//用来标识发起者
 var isChannelReady = false;//用来标识两个人都已经进了同一间屋子
 var isStarted = false;
@@ -11,7 +25,9 @@ var wantHostMode      = false;
 var wantReflexiveMode = false;
 var wantRelayMode     = true;
 
-var pcConfig = {
+var pcConfig = {}; //客户端不可见由后台下发
+/*
+{
   'iceServers': [
     {
       'url': 'turn:119.29.28.242:3478?transport=udp',
@@ -21,6 +37,7 @@ var pcConfig = {
     //,{'url': 'stun:stun.l.google.com:19302'},
   ]
 };
+*/
 
 // Set up audio and video regardless of what devices are present.
 var sdpConstraints = {
@@ -141,7 +158,7 @@ window.onbeforeunload = function()
 //到这里进房间完成，信令通信告一段落，开始真正音视频操作
 socket.on('message', function(message) 
 {
-  console.log('[OnMessage]['+message.type+']', message);
+  console.log('[OnMessage]['+message.type+'] Receive from the other!', message);
   
   if (message.type === 'offer') 
   {
