@@ -47,12 +47,11 @@ io.sockets.on('connection', function(socket)
     }
 
     socket.on('join', function(room) {
-        console.log('Received request to create or join room ' + room + ' from ' + socket.id);
-       
+        console.log(socket.id + ' request to join room ' + room );
+        console.log(io.sockets.adapter.rooms[room]);
         var numClients = -1;
         try {
             numClients = io.sockets.adapter.rooms[room].length;
-            console.log(io.sockets.adapter.rooms[room]);
         } catch (error) {
             //房间里没人的话，rooms[room]数组是空的，所以调用.length会抛异常
             numClients = 0;
