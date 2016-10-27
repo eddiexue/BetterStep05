@@ -70,7 +70,7 @@ var room = 'eddiexue';
 var socket = io.connect();//这里的io对象是从哪来的？
 
 if (room !== '') {
-  socket.emit('create or join', room);
+  socket.emit('join', room);
   console.log('1. Attempted to create or join room', room);
 }
 

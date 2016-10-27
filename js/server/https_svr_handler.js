@@ -9,56 +9,46 @@ var https = require('https'); //由于浏览器都必须https了，所以这里�
 var nodeStatic = require('node-static');//httpsvr的实现，简化处理逻辑
 var socketIO = require('socket.io');//用来实现房间和多人聊天
 
+/**
+ * console.log(__dirname);             //  /root/workspace/SimpleWebrtc/js/server
+ * console.log(__filename);            //  /root/workspace/SimpleWebrtc/js/server/https_svr_handler.js
+ * console.log(process.cwd());         //  /root/workspace/SimpleWebrtc
+ * console.log(path.resolve('./'));    //  /root/workspace/SimpleWebrtc
+ */
+var workspaceDir = console.log(process.cwd());
 
-console.log(__dirname);
-console.log(__filename);
-console.log(process.cwd());
-console.log(path.resolve('./'));
-
-
-
-
-
-var options = {  
-    key: fs.readFileSync('../cert/privatekey.pem'),  
-    cert: fs.readFileSync('./cert/certificate.pem')  
+//秘钥和证书的配置
+var secure_options = {  
+    key: fs.readFileSync( workspaceDir+'/cert/privatekey.pem' ),  
+    cert: fs.readFileSync( workspaceDir+'/cert/certificate.pem')  
 };
 
 //为了测试，本地cache尽快更新; 把index.html改个名字试试
-var fileHandler = new nodeStatic.Server( {cache: 1, indexFile: 'frontpage.html'} );
+var requestHandler = new nodeStatic.Server( {cache: 1, indexFile: 'index.html'} );
 
 //启动简单文件服务器，到这里其实只负责把文件都拉回去
-var httpsServer = https.createServer(options, function(request, response){
+var httpsServer = https.createServer(secure_options, function(request, response){
     request.addListener('end', function () {
-        fileHandler.serve(request, response).addListener('error', function (err) {
+        requestHandler.serve(request, response).addListener('error', function (err) {
             console.error("Error serving: " + request.url + " - " + err.message);
         });
     }).resume();
-    //console.log('Request: ' + request.url);
 }).listen(8888);
 
 //让socket监听httpServer的事件
 var io = socketIO.listen(httpsServer);
 
-io.sockets.on('connection', function(socket){
-
-    function log(content) 
-    {
-        console.log(content);
-    }
-
-    function sendObjToBrowser() {
-        var array = ['Message from server:'];
+io.sockets.on('connection', function(socket)
+{
+    function sendDebugInfoBack() {
+        var array = ['[Debug][Server]:'];
         array.push.apply(array, arguments);
         socket.emit('log', array);
     }
 
-    socket.on('create or join', function(room) {
-        log('Received request to create or join room ' + room);
-
-        //http://stackoverflow.com/questions/9352549/getting-how-many-people-are-in-a-chat-room-in-socket-io
-        //var numClients = io.sockets.sockets.length;
-        
+    socket.on('join', function(room) {
+        console.log('Received request to create or join room ' + room + ' from ' + socket.id);
+       
         var numClients = -1;
         try {
             numClients = io.sockets.adapter.rooms[room].length;

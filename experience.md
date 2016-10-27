@@ -22,3 +22,5 @@
 
 chrome://version/，可以查看chrome启动的命令行参数和可执行文件目录
 可以参考start_chrome.sh的方式启动chrome，可以多打出一些信息，不过还要进一步研究研究
+
+ VSC的使用指南，参考http://code.visualstudio.com/docs/editor/codebasics

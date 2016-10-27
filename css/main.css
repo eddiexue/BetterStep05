@@ -6,3 +6,53 @@ video {
   max-width: 100%;
   width: 320px;
 }
+
+button {
+  margin: 20px 10px 0 0;
+  width: 130px;
+}
+
+button#gather {
+  display: block;
+}
+
+section#iceServers input {
+  margin: 0 0 10px;
+  width: 260px;
+}
+
+section#iceConstraints label {
+  margin: 0 1em 0 0;
+}
+
+section#iceServers label {
+  display: inline-block;
+  width: 150px;
+}
+
+select#servers {
+  font-size: 1em;
+  padding: 5px;
+  width: 420px;
+}
+
+div#iceTransports span {
+  margin: 0 1em 0 0;
+}
+
+table#candidates {
+  font-size: 0.7em;
+  text-align: right;
+  overflow-y: auto;
+  width: 100%;
+}
+
+th {
+font-weight: bold;
+}
+th:nth-child(3),td:nth-child(3) {
+  text-align: left
+}
+th:nth-child(6),td:nth-child(6) {
+  text-align: left
+}
