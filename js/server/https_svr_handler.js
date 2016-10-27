@@ -1,5 +1,13 @@
 'use strict';
 
+
+//Todo1: 从turnserver目录下的配置文件里读取配置信息
+//Todo2: 修改SDP的内容，使其生成h264内容
+
+
+
+
+
 var os = require('os');
 var fs = require('fs');
 var path = require('path');
