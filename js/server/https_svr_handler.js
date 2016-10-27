@@ -17,14 +17,15 @@ var socketIO = require('socket.io');//用来实现房间和多人聊天
  */
 var workspaceDir = process.cwd();
 
-//秘钥和证书的配置
+//信令服务的秘钥和证书的配置
 var secure_options = {  
     key: fs.readFileSync( workspaceDir+'/cert/privatekey.pem' ),  
     cert: fs.readFileSync( workspaceDir+'/cert/certificate.pem')  
 };
 
+//从turnserver配置文件中读取？？
 var turn_static_auth_secret = '4080218913';
-var turn_usercombo = ((new Date()).valueOf()/1000+86400*3650)+':'+'eddiexue';
+var turn_usercombo =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
 var turn_password = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
 
 var pcConfig = {
@@ -40,6 +41,7 @@ var pcConfig = {
 
 console.log('username='+pcConfig.iceServers[0].username);
 console.log('credential='+pcConfig.iceServers[0].credential);
+console.log('credential2='+crypto.createHmac('sha1', turn_static_auth_secret).update('1509020397:helloword').digest().toString('base64'));
 
 //为了测试，本地cache尽快更新; 把index.html改个名字试试
 var requestHandler = new nodeStatic.Server( {cache: 1, indexFile: 'index.html'} );
