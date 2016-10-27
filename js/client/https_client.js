@@ -237,6 +237,10 @@ function handleIceCandidate(event)
 
   } 
   else {
+    if (isInitiator) 
+    {
+      doOffer();
+    }
     console.log('>>>>>> handleIceCandidate(event) End of candidates.');
   }
 }
