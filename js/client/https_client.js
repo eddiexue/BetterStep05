@@ -228,7 +228,7 @@ function handleIceCandidate(event)
       return;
     }
 
-    console.log('>>>>>> handleIceCandidate(event) selected candidate: ', ice);
+    console.log('>>>>>> handleIceCandidate(event) selected a '+ candidateType+' candidate and send to the other');
     sendMsgToOthers({
       type: 'candidate',
       label: event.candidate.sdpMLineIndex,
