@@ -48,7 +48,7 @@ io.sockets.on('connection', function(socket)
 
     socket.on('join', function(room) {
         console.log(socket.id + ' request to join room ' + room );
-        var numClients = (undefined === io.sockets.adapter.rooms[room] ? 0 : io.sockets.adapter.rooms[room].length;
+        var numClients = (undefined === io.sockets.adapter.rooms[room] ? 0 : io.sockets.adapter.rooms[room].length);
         
         if (numClients === 0) 
         {
