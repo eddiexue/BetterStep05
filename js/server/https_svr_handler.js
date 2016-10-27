@@ -40,47 +40,42 @@ var io = socketIO.listen(httpsServer);
 
 io.sockets.on('connection', function(socket)
 {
-    function sendDebugInfoBack() {
+    function sendDebugInfoBack() 
+    {
         var array = ['[Debug][Server]:'];
         array.push.apply(array, arguments);
         socket.emit('log', array);
     }
 
-    socket.on('join', function(room) {
-        console.log(socket.id + ' request to join room ' + room );
+    socket.on('join', function(room) 
+    {
         var numClients = (undefined === io.sockets.adapter.rooms[room] ? 0 : io.sockets.adapter.rooms[room].length);
         
+        //第一个进来的是创建者
         if (numClients === 0) 
         {
             socket.join(room);
-            console.log('Client ID ' + socket.id + ' created room ' + room);
-            
-            //因为前面join了，所以这里的socket就应该和io.sockets.in(room)返回值一样？
             socket.emit('created', room, socket.id);
+            console.log('[On Join] Client[' + socket.id + '] created room ' + room);
         } 
+        //第二个进来的是参与者
         else if (numClients === 1) 
-        {
-            console.log('Client ID ' + socket.id + ' joined room ' + room);
-            //这条消息在join之前，所以只有第一个进来的那边能收到
-            io.sockets.in(room).emit('join', room);
-            
+        {            
             //第二个参加者也进来了
             socket.join(room);
-            //通过指定ID的方式专门给第二个进来的人发消息
-            socket.emit('joined', room, socket.id);
+            io.sockets.in(room).emit('join', room, socket.id);
+            console.log('[On Join] Client[' + socket.id + '] joined room ' + room);
 
             //知会房间里的所有人准备就绪，但是貌似没啥用
             io.sockets.in(room).emit('ready');
+            console.log('[On Join] Send READY signal for all clients ('+ numClients +') in room: ' + room);
         } 
+        //暂时只支持两人连麦
         else 
         { // max two clients
-            socket.emit('full or undefined:', room);
+            socket.emit('full', room);
+            console.log('[On Join] Room: ' + room + ' has been full(' + numClients + ')!');
         }
-        
-        //再看看有多少人连上来了
-        numClients = io.sockets.adapter.rooms[room].length;
-        console.log('Room ' + room + ' now has ' + numClients + ' client(s)');
-
     });
 
     socket.on('ipaddr', function() {
@@ -94,36 +89,26 @@ io.sockets.on('connection', function(socket)
         }
     });
 
-
-    socket.on('bye', function(){
-        console.log('received bye');
+    socket.on('bye', function(room){
+        console.log('[On Bye] Received bye from ' + socket.id + 'in room:' + room);
     });
 
-
-    //消息群发功能，将收到的消息广播给房间里所有人
+    //消息群发功能，将收到的消息广播给房间里所有人，包括发送者自己
     socket.on('message', function(message, roomid) {
-        console.log('Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "string"? message : message.type) );
-        
-        //主要是为了应对这条消息，'got user media'，该消息用于触发浏览器客户端启动webrtc流程[maybeStart()]
-        //注意只有一个人进房间的时候触发不了下一步操作，另一个人进来之后还会在房间内群发，这时候才能触发下一步操作
-        //io.sockets.in(roomid).emit('message', message);
-        //sendObjToBrowser(io.sockets.adapter.rooms);
         io.sockets.in(roomid).send(message);
-
-        // for a real app, would be room-only (not broadcast)
-        // socket.broadcast.emit('message', message);
+        console.log('[On Message]Client(' + socket.id + ')('+ typeof message +') said: ' + (typeof message === "string"? message : message.type) );
     });
 
     //只把消息回给发件人自己
     socket.on('message_self_remind', function(message, roomid) {
-        console.log('Client(' + socket.id + ')('+ typeof message +') remind: ' + (typeof message === "string"? message : message.type) );
         socket.emit('message', message);
+        console.log('[On Message_SELF_REMIND]Client(' + socket.id + ')('+ typeof message +') remind: ' + (typeof message === "string"? message : message.type) );
     });
 
     //把消息发给房间除了自己以外的其他人
     socket.on('message_to_others', function(message, roomid) {
-        console.log('Client(' + socket.id + ')('+ typeof message +') to others: ' + (typeof message === "string"? message : message.type) );
         socket.broadcast.to(roomid).send(message);
+        console.log('[On MESSAGE_TO_OTHERS]Client(' + socket.id + ')('+ typeof message +') to others: ' + (typeof message === "string"? message : message.type) );
     });
 
 });

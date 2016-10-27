@@ -11,18 +11,6 @@ var wantHostMode      = false;
 var wantReflexiveMode = false;
 var wantRelayMode     = true;
 
-/* 
- * 打印 JavaScript 函数调用堆栈 
- */  
-function printCallStack() {  
-    var e = new Error('dummy');
-    var stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
-      .replace(/^\s+at\s+/gm, '')
-      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
-      .split('\n');
-    console.log(stack);
-}  
-
 var pcConfig = {
   'iceServers': [
     {
@@ -30,28 +18,9 @@ var pcConfig = {
       'username': '1509020397:helloword',
       'credential': '+SLiebXF1e6o+R09Peu2yteQCnY='
     }
-    /*
-    ,
-    {
-      'url': 'turn:119.29.28.242:3478?transport=tcp',
-      'credential': 'testpassword',
-      'username': 'testqq'
-    }
-    */
-    //{'url': 'stun:stun.l.google.com:19302'},
-    /*
-    {     
-     "urls": [
-       "turn:119.29.28.242:3478?transport=udp"
-     ], 
-     "username": "1477536990:helloword",
-     "credential": "zCdpwQZPq4U51sC55YU6Qhd2BRM="
-   }
-   */
+    //,{'url': 'stun:stun.l.google.com:19302'},
   ]
 };
-
-  
 
 // Set up audio and video regardless of what devices are present.
 var sdpConstraints = {
@@ -62,47 +31,7 @@ var sdpConstraints = {
 };
 
 /////////////////////////////////////////////
-
-var room = 'eddiexue';
-// Could prompt for room name:
-//room = prompt('Enter room name:');
-
 var socket = io.connect();//这里的io对象是从哪来的？
-
-if (room !== '') {
-  socket.emit('join', room);
-  console.log('1. Attempted to create or join room', room);
-}
-
-//Server发消息告诉第一个浏览器客户端进房间成功
-socket.on('created', function(room) {
-  console.log('Created room ' + room, socket);
-  isInitiator = true;
-});
-
-//标识第一个用户进来了，这里log内容不一样，主要为了在浏览器Console里两个人看到不一样的内容
-socket.on('join', function (room){
-  console.log('Another peer made a request to join room ' + room);
-  console.log('This peer is the initiator of room ' + room + '!');
-  isChannelReady = true;
-});
-
-//标识第二个用户进来了
-socket.on('joined', function(room) {
-  console.log('joined: ' + room);
-  isChannelReady = true;
-});
-
-socket.on('full', function(room) {
-  console.log('Room ' + room + ' is full');
-});
-
-socket.on('log', function(array) {
-  console.log.apply(console, array);
-});
-
-//到这里进房间完成，信令通信告一段落，开始真正音视频操作
-////////////////////////////////////////////////
 
 function sendMessage(message, roomid) {
   console.log('[SEND_MSG]: ', message);
@@ -120,35 +49,45 @@ function sendMsgToOthers(message, roomid)
   console.log('[SEND_MSG_TO_OTHERS]: ', message);
     socket.emit('message_to_others', message, roomid);
 }
+////////////////////////////////////////////////
 
-// This client receives a message
-socket.on('message', function(message) {
-  console.log('[RECV_MSG]['+message.type+']', message);
-  
-  if (message === 'got user media') {
-    maybeStart();
-  } 
-  else if (message.type === 'offer') {//setLocalAndSendMessage会offer对方
-    if (!isInitiator && !isStarted) {
-      maybeStart();
-    }
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-    doAnswer();
-  } 
-  else if (message.type === 'answer' && isStarted) {
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-  } 
-  else if (message.type === 'candidate' && isStarted) {
-    var candidate = new RTCIceCandidate({
-      sdpMLineIndex: message.label,
-      candidate: message.candidate
-    });
-    pc.addIceCandidate(candidate);
-  } 
-  else if (message === 'bye' && isStarted) {
-    handleRemoteHangup();
+var room = 'eddiexue';
+// Could prompt for room name:
+//room = prompt('Enter room name:');
+
+if (room !== '') 
+{
+  socket.emit('join', room);
+  console.log('Attempted to join room', room);
+}
+
+socket.on('created', function(room) {
+  console.log('[On] Created room ' + room, socket);
+  isInitiator = true;
+});
+
+//标识第一个用户进来了，这里log内容不一样，主要为了在浏览器Console里两个人看到不一样的内容
+socket.on('join', function (room){
+  if( isInitiator )
+  {
+    console.log('[On] Another peer made a request to join room ' + room);
+    console.log('[On] This peer is the initiator of room ' + room + '!');
   }
-  
+  isChannelReady = true;
+});
+
+//人齐了，可以开工了
+socket.on('ready', function(room) {
+  isChannelReady = true;
+  console.log('[On] Signal channel is ready for room: ' + room);
+});
+
+socket.on('full', function(room) {
+  console.log('Room ' + room + ' is full');
+});
+
+socket.on('log', function(array) {
+  console.log.apply(console, array);
 });
 
 ////////////////////////////////////////////////////
@@ -165,8 +104,8 @@ navigator.mediaDevices.getUserMedia({
   alert('getUserMedia() error: ' + e.name);
 });
 
-function gotStream(stream) {
-  console.log('()gotStream()Adding local stream.');
+function gotStream(stream) 
+{
   localVideo.src = window.URL.createObjectURL(stream);
   localStream = stream;
   sendMessage('got user media', room);
@@ -207,6 +146,38 @@ window.onbeforeunload = function() {
 };
 
 /////////////////////////////////////////////////////////
+
+//到这里进房间完成，信令通信告一段落，开始真正音视频操作
+socket.on('message', function(message) 
+{
+  console.log('[RECV_MSG]['+message.type+']', message);
+  
+  if (message === 'got user media') {
+    maybeStart();
+  } 
+  else if (message.type === 'offer') {//setLocalAndSendMessage会offer对方
+    if (!isInitiator && !isStarted) {
+      maybeStart();
+    }
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+    doAnswer();
+  } 
+  else if (message.type === 'answer' && isStarted) {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+  } 
+  else if (message.type === 'candidate' && isStarted) {
+    var candidate = new RTCIceCandidate({
+      sdpMLineIndex: message.label,
+      candidate: message.candidate
+    });
+    pc.addIceCandidate(candidate);
+  } 
+  else if (message === 'bye' && isStarted) {
+    handleRemoteHangup();
+  }
+  
+});
+
 
 function requestTurn(turnURL){
   var turnExists = false;
@@ -315,7 +286,7 @@ function onCreateSessionDescriptionError(error) {
 function hangup() {
   console.log('Hanging up.');
   stop();
-  sendMessage('bye');
+  sendMessage('bye', room);
 }
 
 function handleRemoteHangup() {
