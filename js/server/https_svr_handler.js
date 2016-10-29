@@ -75,7 +75,7 @@ var turn_static_auth_secret = turnserver_conf.static-auth-secret;
 var turn_usercombo =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
 var turn_password = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
 console.log('turnserver_conf='+turnserver_conf);
-console.log(workspaceDir+'/../turnserver/conf/turnserver.conf');
+console.log(workspaceDir+'/../../turnserver/conf/turnserver.conf');
 console.log('turn_static_auth_secret='+turn_static_auth_secret);
 
 
