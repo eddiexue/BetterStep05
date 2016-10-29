@@ -51,7 +51,7 @@ function parseINIString(data)
             }else{  
                 value[match[1]] = match[2];  
             }
-            console.log('match: '+match[1] + ' = ' +  value[match[1]]);
+            //console.log('[turnserver property]'+match[1] + ' = ' +  value[match[1]]);
         }
         else if(regex.section.test(line))
         {  
@@ -90,8 +90,8 @@ var pcConfig = {
 console.log('creating turnserver secure secret...');
 for(var i=0 ; i < pcConfig.iceServers.length; i++)
 {
-    console.log('url['+i+']         =        '+pcConfig.iceServers[i].url);
-    console.log('username['+i+']    =   '+pcConfig.iceServers[i].username);
+    console.log('url['+i+']         = '+pcConfig.iceServers[i].url);
+    console.log('username['+i+']    = '+pcConfig.iceServers[i].username);
     console.log('credential['+i+']  = '+pcConfig.iceServers[i].credential);
 }
 console.log('-----------------------------------');
