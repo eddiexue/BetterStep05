@@ -51,7 +51,8 @@ function parseINIString(data)
                 value[section][match[1]] = match[2];  
             }else{  
                 value[match[1]] = match[2];  
-            }  
+            }
+            console.log('match: '+match[1] + ' = ' +  value[match[1]]);
         }
         else if(regex.section.test(line))
         {  
