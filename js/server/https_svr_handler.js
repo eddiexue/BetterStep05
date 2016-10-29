@@ -21,6 +21,10 @@ var socketIO = require('socket.io');//用来实现房间和多人聊天
  * console.log(process.cwd());         //  /root/workspace/SimpleWebrtc, 会随着执行路径变化而变化，不理想
  * console.log(path.resolve('./'));    //  /root/workspace/SimpleWebrtc, 同上
  */
+console.log(__filename);
+console.log(typeof __filename);
+console.log(__filename.toString());
+
 var workspaceDir = __filename.slice(0, __filename.indexOf('SimpleWebrtc'));
 
 //信令服务的秘钥和证书的配置
