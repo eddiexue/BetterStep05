@@ -1,8 +1,6 @@
 'use strict';
 
-//Todo2: 修改SDP的内容，使其生成h264内容
-
-
+//@TODO: 修改SDP的内容，使其生成h264内容
 
 
 
@@ -21,9 +19,6 @@ var socketIO = require('socket.io');//用来实现房间和多人聊天
  * console.log(process.cwd());         //  /root/workspace/SimpleWebrtc, 会随着执行路径变化而变化，不理想
  * console.log(path.resolve('./'));    //  /root/workspace/SimpleWebrtc, 同上
  */
-console.log(__filename);
-console.log(typeof __filename);
-console.log(__filename.toString());
 
 var workspaceDir = __filename.slice(0, __filename.indexOf('SimpleWebrtc')+'SimpleWebrtc'.length);
 
@@ -75,17 +70,16 @@ function parseINIString(data)
 //从turnserver配置文件中读取？？
 var turnserver_conf = parseINIString(fs.readFileSync( workspaceDir+'/../../turnserver/conf/turnserver.conf').toString());
 var turn_static_auth_secret = turnserver_conf['static-auth-secret'];
-var turn_usercombo =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
-var turn_password = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
-console.log('turnserver_conf='+turnserver_conf);
-console.log(workspaceDir+'/../../turnserver/conf/turnserver.conf');
-console.log('turn_static_auth_secret='+turn_static_auth_secret);
-
+var turn_usercombo  =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
+var turn_password   = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
+var turn_ip_addr    = '119.29.28.242:3478';
+//console.log('path(turnserver.conf)='+turnserver_conf);
+//console.log('turn_static_auth_secret='+turn_static_auth_secret);
 
 var pcConfig = {
   'iceServers': [
     {
-      'url': 'turn:119.29.28.242:3478?transport=udp',
+      'url': 'turn:'+turn_ip_addr+'?transport=udp',
       'username': turn_usercombo,
       'credential': turn_password
     }
@@ -96,9 +90,9 @@ var pcConfig = {
 console.log('creating turnserver secure secret...');
 for(var i=0 ; i < pcConfig.iceServers.length; i++)
 {
-    console.log('url['+i+']=        '+pcConfig.iceServers[i].url);
-    console.log('username['+i+']=   '+pcConfig.iceServers[i].username);
-    console.log('credential['+i+']= '+pcConfig.iceServers[i].credential);
+    console.log('url['+i+']         =        '+pcConfig.iceServers[i].url);
+    console.log('username['+i+']    =   '+pcConfig.iceServers[i].username);
+    console.log('credential['+i+']  = '+pcConfig.iceServers[i].credential);
 }
 console.log('-----------------------------------');
 
