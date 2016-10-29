@@ -70,7 +70,7 @@ function parseINIString(data)
 }  
 
 //从turnserver配置文件中读取？？
-var turnserver_conf = parseINIString(fs.readFileSync( workspaceDir+'/../turnserver/conf/turnserver.conf' ));
+var turnserver_conf = parseINIString(fs.readFileSync( workspaceDir+'/../../turnserver/conf/turnserver.conf' ));
 var turn_static_auth_secret = turnserver_conf.static-auth-secret;
 var turn_usercombo =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
 var turn_password = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
