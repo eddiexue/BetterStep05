@@ -17,11 +17,11 @@ var socketIO = require('socket.io');//用来实现房间和多人聊天
 
 /**
  * console.log(__dirname);             //  /root/workspace/SimpleWebrtc/js/server
- * console.log(__filename);            //  /root/workspace/SimpleWebrtc/js/server/https_svr_handler.js
- * console.log(process.cwd());         //  /root/workspace/SimpleWebrtc
- * console.log(path.resolve('./'));    //  /root/workspace/SimpleWebrtc
+ * console.log(__filename);            //  /root/workspace/SimpleWebrtc/js/server/https_svr_handler.js, 这个好一点
+ * console.log(process.cwd());         //  /root/workspace/SimpleWebrtc, 会随着执行路径变化而变化，不理想
+ * console.log(path.resolve('./'));    //  /root/workspace/SimpleWebrtc, 同上
  */
-var workspaceDir = process.cwd();
+var workspaceDir = __filename.slice(0, __filename.indexOf('SimpleWebrtc'));
 
 //信令服务的秘钥和证书的配置
 var secure_options = {  
