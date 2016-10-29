@@ -25,7 +25,7 @@ console.log(__filename);
 console.log(typeof __filename);
 console.log(__filename.toString());
 
-var workspaceDir = __filename.slice(0, __filename.indexOf('SimpleWebrtc'));
+var workspaceDir = __filename.slice(0, __filename.indexOf('SimpleWebrtc')+'SimpleWebrtc'.length);
 
 //信令服务的秘钥和证书的配置
 var secure_options = {  
