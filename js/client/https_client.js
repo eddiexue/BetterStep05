@@ -338,8 +338,8 @@ function preferH264(sdp)
           while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') != -1 ) && j < sdpLines.length)
             j++;
           
-          /*
           var deleteItems = sdpLines.splice(i, j-i);
+          /*
           for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
             console.log('[preferH264.delete]:'+deleteItems[k]);
           */
@@ -365,6 +365,10 @@ function preferH264(sdp)
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
       
+      if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=101') || sdpLines[i].search('apt=100')) ) 
+      {
+        sdpLines.splice(i, 1);
+      }
     }
 
     sdp = sdpLines.join('\r\n');
