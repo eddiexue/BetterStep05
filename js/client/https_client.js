@@ -336,7 +336,7 @@ function preferH264(sdp)
         if( sdpLines[i].toUpperCase().search('VP8') !=-1 || sdpLines[i].toUpperCase().search('VP9') !=-1)
         {
           var j = i+1;
-          while(sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') || j < sdpLines.length)
+          while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') ) && j < sdpLines.length)
             j++;
 
           var deleteItems = sdpLines.splice(i, j-i);
