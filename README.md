@@ -21,7 +21,8 @@
 到这一步好运气基本用完，由于webrtc和后端node.js的api都是基于JavaScript的，不熟悉一下语法寸步难行，于是下载《JavaScript高级程序设计(第3版)》、《JavaScript语言精粹（修订版）》先看几天。熟悉完语法，就可以着手准备webrtc中转模式了。
 
 chrome://version/，可以查看chrome启动的命令行参数和可执行文件目录
-可以参考start_chrome.sh的方式启动chrome，可以多打出一些信息，不过还要进一步研究研究
+可以参考start_chrome.sh的方式启动chrome，可以多打出一些信息，不过还要进一步研究研究!!
+这个是可以有的!!!!!!!!!!
 
 VSC的使用指南，参考http://code.visualstudio.com/docs/editor/codebasics
 
@@ -29,3 +30,5 @@ STUN/TURN配置
 1、必须全面支持安全设置
 2、使用realm域
 3、必须启用use-auth-secret，并搭配加密秘钥static-auth-secret=4080218913，用户名:密码的形式不再可用
+
+//@TODO: 修改SDP的内容，使其生成h264内容

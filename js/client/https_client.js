@@ -324,6 +324,13 @@ function stop() {
 }
 
 ///////////////////////////////////////////
+function preferH264(sdp)
+{
+    var sdpLines = sdp.split('\r\n');
+    var mLineIndex;
+}
+
+///////////////////////////////////////////
 
 // Set Opus as the default audio codec if it's present.
 function preferOpus(sdp) {
