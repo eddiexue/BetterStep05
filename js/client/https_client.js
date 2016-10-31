@@ -329,7 +329,7 @@ function preferH264(sdp)
 {
     var sdpLines = sdp.split('\r\n');
     console.log('>>>>>>>>>>>sdpline=',sdpLines);
-    for(var i = sdpLines.length; i >= 0; i--)
+    for(var i = sdpLines.length-1; i >= 0; i--)
     {
       if( sdpLines[i].search('a=rtpmap:') !=-1 )
       {
