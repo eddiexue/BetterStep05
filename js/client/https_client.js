@@ -337,36 +337,33 @@ function preferH264(sdp)
           var j = i+1;
           while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') != -1 ) && j < sdpLines.length)
             j++;
-
+          
+          /*
           var deleteItems = sdpLines.splice(i, j-i);
           for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
             console.log('[preferH264.delete]:'+deleteItems[k]);
+          */
         }
       }
-    }
 
-    sdp = sdpLines.join('\r\n');
-    return sdp;
-}
-
-function preferVP8(sdp)
-{
-    var sdpLines = sdp.split('\r\n');
-    for(var i = sdpLines.length-1; i >= 0; i--)
-    {
-      if( sdpLines[i].search('a=rtpmap:') !=-1 )
+      //m=video 9 UDP/TLS/RTP/SAVPF 100 101 107 116 117 96 97 99 98
+      //去掉里面的100=vp8, 101=vp9 
+      if( sdpLines[i].search('m=video') !=-1 )
       {
-        if( sdpLines[i].toUpperCase().search('VP9') !=-1 || sdpLines[i].toUpperCase().search('H264') !=-1)
+        var elements = sdpLines[i].split(' ');
+        var newLine = [];
+        var m = 0
+        for(var l = 0; l < elements.length; l++)
         {
-          var j = i+1;
-          while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') != -1 ) && j < sdpLines.length)
-            j++;
-
-          var deleteItems = sdpLines.splice(i, j-i);
-          for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
-            console.log('[preferVP8.delete]:'+deleteItems[k]);
+          if(elements[l] === '100' || elements[l] === '101')
+            continue;
+          else
+            newline[m++] = elements[l];
         }
+        sdpLines[i] = newline.join(' ');
+        console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
+      
     }
 
     sdp = sdpLines.join('\r\n');
