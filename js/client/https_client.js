@@ -360,7 +360,7 @@ function preferH264(sdp)
           else
             newLine[m++] = elements[l];
         }
-        //newLine[1] = ''+(newLine.length-3);
+        newLine[1] = ''+(newLine.length-3);
         sdpLines[i] = newLine.join(' ');
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
