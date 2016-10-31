@@ -289,7 +289,7 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  sessionDescription.sdp = preferVP9(sessionDescription.sdp);
+  sessionDescription.sdp = preferVP8(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -349,14 +349,14 @@ function preferH264(sdp)
     return sdp;
 }
 
-function preferVP9(sdp)
+function preferVP8(sdp)
 {
     var sdpLines = sdp.split('\r\n');
     for(var i = sdpLines.length-1; i >= 0; i--)
     {
       if( sdpLines[i].search('a=rtpmap:') !=-1 )
       {
-        if( sdpLines[i].toUpperCase().search('VP8') !=-1 || sdpLines[i].toUpperCase().search('H264') !=-1)
+        if( sdpLines[i].toUpperCase().search('VP9') !=-1 || sdpLines[i].toUpperCase().search('H264') !=-1)
         {
           var j = i+1;
           while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') != -1 ) && j < sdpLines.length)
@@ -364,7 +364,7 @@ function preferVP9(sdp)
 
           var deleteItems = sdpLines.splice(i, j-i);
           for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
-            console.log('[preferVP9.delete]:'+deleteItems[k]);
+            console.log('[preferVP8.delete]:'+deleteItems[k]);
         }
       }
     }
