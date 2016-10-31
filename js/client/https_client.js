@@ -328,7 +328,6 @@ function stop() {
 function preferH264(sdp)
 {
     var sdpLines = sdp.split('\r\n');
-    console.log('>>>>>>>>>>>sdpline=',sdpLines);
     for(var i = sdpLines.length-1; i >= 0; i--)
     {
       if( sdpLines[i].search('a=rtpmap:') !=-1 )
@@ -340,6 +339,7 @@ function preferH264(sdp)
             j++;
 
           var deleteItems = sdpLines.splice(i, j-i);
+          console.log('['+i+']===================================================['+j+']');
           for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
             console.log('[preferH264.delete]:'+deleteItems[k]);
         }
