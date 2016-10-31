@@ -360,15 +360,17 @@ function preferH264(sdp)
           else
             newLine[m++] = elements[l];
         }
-        newLine[1] = ''+(newLine.length-3);
+        //newLine[1] = ''+(newLine.length-3);
         sdpLines[i] = newLine.join(' ');
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
       
-      if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=101') || sdpLines[i].search('apt=100')) ) 
+      /*
+      if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=100') || sdpLines[i].search('apt=101')) ) 
       {
         sdpLines.splice(i, 1);
       }
+      */
     }
 
     sdp = sdpLines.join('\r\n');
