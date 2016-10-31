@@ -342,10 +342,6 @@ SDPUtils.writeRtpDescription = function(kind, caps) {
     sdp += SDPUtils.writeRtpMap(codec);
     sdp += SDPUtils.writeFmtp(codec);
     sdp += SDPUtils.writeRtcpFb(codec);
-    console.log('[ADAPTER]==============')
-    console.log('[ADAPTER]'+SDPUtils.writeRtpMap(codec));
-    console.log('[ADAPTER]'+SDPUtils.writeFmtp(codec));
-    console.log('[ADAPTER]'+SDPUtils.writeRtcpFb(codec));
   });
   // FIXME: add headerExtensions, fecMechanismş and rtcp.
   sdp += 'a=rtcp-mux\r\n';
