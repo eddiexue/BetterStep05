@@ -358,9 +358,9 @@ function preferH264(sdp)
           if(elements[l] === '100' || elements[l] === '101')
             continue;
           else
-            newline[m++] = elements[l];
+            newLine[m++] = elements[l];
         }
-        sdpLines[i] = newline.join(' ');
+        sdpLines[i] = newLine.join(' ');
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
       
