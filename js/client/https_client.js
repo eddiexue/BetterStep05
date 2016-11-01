@@ -347,7 +347,8 @@ function preferH264(sdp)
       }
 
       //m=video 9 UDP/TLS/RTP/SAVPF 100 101 107 116 117 96 97 99 98
-      //去掉里面的100=vp8, 101=vp9 
+      //去掉里面的100=vp8, 101=vp9
+      /*
       if( sdpLines[i].search('m=video') !=-1 )
       {
         var elements = sdpLines[i].split(' ');
@@ -364,13 +365,22 @@ function preferH264(sdp)
         sdpLines[i] = newLine.join(' ');
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
-      
-      /*
+      */
+
+      /*去掉ftmp和apt里的100和101内容
+      //↵a=fmtp:96 apt=100
       if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=100') || sdpLines[i].search('apt=101')) ) 
       {
         sdpLines.splice(i, 1);
       }
       */
+
+      //去掉↵a=rtpmap:116 red/90000
+      if( sdpLines[i].toLowerCase().search('a=rtpmap:116 red') !=-1 ) 
+      {
+        sdpLines.splice(i, 1);
+      }
+      
     }
 
     sdp = sdpLines.join('\r\n');
