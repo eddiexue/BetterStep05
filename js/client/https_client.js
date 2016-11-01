@@ -473,9 +473,16 @@ function setDefaultCodec(mLine, payload) {
 // Strip CN from sdp before CN constraints is ready.
 function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   var mLineElements = sdpLines[mLineIndex].split(' ');
+
+  console.log('>>>>> removeRtpmapTarget().removeTarget='+removeTarget);
+
   // Scan from end for the convenience of removing an item.
-  for (var i = sdpLines.length - 1; i >= 0; i--) {
+  for (var i = sdpLines.length - 1; i >= 0; i--) 
+  {
     var regularEq = '/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i';
+
+    console.log('>>>>> removeRtpmapTarget().regularEq='+regularEq);
+
     var payload = extractSdp(sdpLines[i], regularEq);
 
     console.log('>>>>> removeRtpmapTarget().payload='+payload);
