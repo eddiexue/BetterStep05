@@ -452,7 +452,7 @@ function preferOpus(sdp) {
 function extractSdp(sdpLine, pattern) 
 {
   //var result = sdpLine.match(pattern);
-  result = sdpLine.split('[: ]');
+  var result = sdpLine.split('[: ]');
   if( sdpLine.search('a=rtpmap:116 red') !== -1 )
   {
      console.log('||||||| match='+sdpLine);
