@@ -348,6 +348,9 @@ function preferH264(sdp)
     }
   }
 
+  // Remove CN in m line and sdp.
+  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
+
   sdp = sdpLines.join('\r\n');
   return sdp;
 }
@@ -440,7 +443,7 @@ function preferOpus(sdp) {
   }
 
   // Remove CN in m line and sdp.
-  sdpLines = removeCN(sdpLines, mLineIndex);
+  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'CN');
 
   sdp = sdpLines.join('\r\n');
   return sdp;
@@ -468,11 +471,12 @@ function setDefaultCodec(mLine, payload) {
 }
 
 // Strip CN from sdp before CN constraints is ready.
-function removeCN(sdpLines, mLineIndex) {
+function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   var mLineElements = sdpLines[mLineIndex].split(' ');
   // Scan from end for the convenience of removing an item.
   for (var i = sdpLines.length - 1; i >= 0; i--) {
-    var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
+    var regularEq = '/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i';
+    var payload = extractSdp(sdpLines[i], regularEq);
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
       if (cnPos !== -1) {
