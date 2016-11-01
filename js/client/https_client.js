@@ -480,7 +480,7 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
     //var regularEq = new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
-    var regularEq = new RegExp('a=rtpmap:(\d+) '+removeTarget+'\/\d+', 'i' );
+    var regularEq = new RegExp('a=rtpmap:[0-9]+ '+removeTarget+'\/[0-9]+', 'i' );
     var payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) {
