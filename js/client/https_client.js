@@ -289,9 +289,9 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  console.log('????? before=', sessionDescription.sdp)
+  //console.log('????? before=', sessionDescription.sdp)
   sessionDescription.sdp = preferH264(sessionDescription.sdp);
-  console.log('????? after=', sessionDescription.sdp)
+  //console.log('????? after=', sessionDescription.sdp)
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -356,7 +356,7 @@ function preferH264(sdp)
   }
 
   // Remove red in m line and sdp.
-  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
+  //sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
 
   sdp = sdpLines.join('\r\n');
   return sdp;
