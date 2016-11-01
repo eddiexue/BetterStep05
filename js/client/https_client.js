@@ -451,7 +451,7 @@ function preferOpus(sdp) {
 
 function extractSdp(sdpLine, pattern) 
 {
-  if( !sdpLine.match(pattern) )
+  if( sdpLine.match(pattern) )
   {
     var result = sdpLine.split(/[ :]/)
     return result && result.length >= 3 ? result[1] : null;
