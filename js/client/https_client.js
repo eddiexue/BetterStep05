@@ -451,8 +451,12 @@ function preferOpus(sdp) {
 
 function extractSdp(sdpLine, pattern) 
 {
-  var result = sdpLine.split(/[ :]/)
-  return result && result.length >= 3 ? result[1] : null;
+  if( !sdpLine.match(pattern) )
+  {
+    var result = sdpLine.split(/[ :]/)
+    return result && result.length >= 3 ? result[1] : null;
+  }
+  return null;
 }
 
 // Set the selected codec to the first in m line.
