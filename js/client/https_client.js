@@ -449,12 +449,14 @@ function preferOpus(sdp) {
   return sdp;
 }
 
-function extractSdp(sdpLine, pattern) {
+function extractSdp(sdpLine, pattern) 
+{
   var result = sdpLine.match(pattern);
 
   if( sdpLine.search('a=rtpmap:116 red') !== -1 )
   {
      console.log('||||||| match='+sdpLine);
+     console.log('||||||| result.length='+result.length);
      console.log('||||||| result=',(result && result.length === 2 ? result[1] : null));
      console.log('||||||| match?'+sdpLine.match(pattern));
   }
