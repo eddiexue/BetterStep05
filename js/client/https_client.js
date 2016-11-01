@@ -451,17 +451,17 @@ function preferOpus(sdp) {
 
 function extractSdp(sdpLine, pattern) 
 {
-  var result = sdpLine.match(pattern);
-
+  //var result = sdpLine.match(pattern);
+  result = sdpLine.split('[: ]');
   if( sdpLine.search('a=rtpmap:116 red') !== -1 )
   {
      console.log('||||||| match='+sdpLine);
      console.log('||||||| result.length='+result.length);
-     console.log('||||||| result=',(result && result.length === 2 ? result[1] : null));
+     console.log('||||||| result=',(result && result.length >= 3 ? result[1] : null));
      console.log('||||||| match?'+sdpLine.match(pattern));
   }
 
-  return result && result.length === 2 ? result[1] : null;
+  return result && result.length >= 3 ? result[1] : null;
 }
 
 // Set the selected codec to the first in m line.
