@@ -115,7 +115,7 @@ var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector('#remoteVideo');
 
 navigator.mediaDevices.getUserMedia({
-  audio: false,
+  audio: true,
   video: true
 })
 .then(gotStream)//启动设备会被卡住，gotStream可能后面才会执行
@@ -289,7 +289,7 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  sessionDescription.sdp = preferH264(sessionDescription.sdp);
+  //sessionDescription.sdp = preferH264(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -327,6 +327,29 @@ function stop() {
 ///////////////////////////////////////////
 function preferH264(sdp)
 {
+  var sdpLines = sdp.split('\r\n');
+  var mLineIndex;
+  // Search for m line.
+  for (var i = 0; i < sdpLines.length; i++) {
+    if (sdpLines[i].search('m=video') !== -1) {
+      mLineIndex = i;
+      break;
+    }
+  }
+  if (mLineIndex === null || sdpLines[i].search(' 107') !== -1) {
+    console.log('>>>>>>> preferH264() not supported H264 codec!');
+    return sdp;
+  }
+
+  var elements = sdpLines[mLineIndex].split(' ');
+  var idxOfVP8 = sdpLines[i].search('100');
+  var idxOfVP9 = sdpLines[i].search('101');
+  var idxOf264 = sdpLines[i].search('107');
+}
+
+
+function preferH264ByModifyAll(sdp)
+{
     var sdpLines = sdp.split('\r\n');
     for(var i = sdpLines.length-1; i >= 0; i--)
     {
@@ -348,7 +371,6 @@ function preferH264(sdp)
 
       //m=video 9 UDP/TLS/RTP/SAVPF 100 101 107 116 117 96 97 99 98
       //去掉里面的100=vp8, 101=vp9
-      /*
       if( sdpLines[i].search('m=video') !=-1 )
       {
         var elements = sdpLines[i].split(' ');
@@ -365,22 +387,19 @@ function preferH264(sdp)
         sdpLines[i] = newLine.join(' ');
         console.log('preferH264(), after remove:'+ sdpLines[i]);
       }
-      */
 
-      /*去掉ftmp和apt里的100和101内容
+      /*去掉ftmp和apt里的100和101内容*/
       //↵a=fmtp:96 apt=100
       if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=100') || sdpLines[i].search('apt=101')) ) 
       {
         sdpLines.splice(i, 1);
       }
-      */
 
       //去掉↵a=rtpmap:116 red/90000
       if( sdpLines[i].toLowerCase().search('a=rtpmap:116 red') !=-1 ) 
       {
         sdpLines.splice(i, 1);
       }
-      
     }
 
     sdp = sdpLines.join('\r\n');

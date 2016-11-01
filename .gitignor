@@ -1,10 +1,9 @@
 #忽略Visual Studio Code的工作目录
 .vscode/
 
+chrome/
+
 #忽略npm安装目录及其内容，因为可以npm install
 node_modules/
 
 jsconfig.json
-
-#忽略chrome运行目录
-chrome/
