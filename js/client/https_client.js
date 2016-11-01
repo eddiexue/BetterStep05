@@ -288,8 +288,8 @@ function doAnswer()
 function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
-  //  sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  //sessionDescription.sdp = preferH264(sessionDescription.sdp);
+  // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+  sessionDescription.sdp = preferH264(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -336,18 +336,23 @@ function preferH264(sdp)
       break;
     }
   }
-  if (mLineIndex === null || sdpLines[i].search(' 107') !== -1) {
-    console.log('>>>>>>> preferH264() not supported H264 codec!');
-    return sdp;
+
+  // If H264 is available, set it as the default in m line.
+  for (i = 0; i < sdpLines.length; i++) {
+    if (sdpLines[i].search('H264/') !== -1) {
+      var h264Payload = extractSdp(sdpLines[i], /:(\d+) H264\//i);
+      if (h264Payload) {
+        sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], h264Payload);
+      }
+      break;
+    }
   }
 
-  var elements = sdpLines[mLineIndex].split(' ');
-  var idxOfVP8 = sdpLines[i].search('100');
-  var idxOfVP9 = sdpLines[i].search('101');
-  var idxOf264 = sdpLines[i].search('107');
+  sdp = sdpLines.join('\r\n');
+  return sdp;
 }
 
-
+//在没搞清楚SDP的完整内容之前，还不能这样乱改
 function preferH264ByModifyAll(sdp)
 {
     var sdpLines = sdp.split('\r\n');
@@ -426,9 +431,9 @@ function preferOpus(sdp) {
   // If Opus is available, set it as the default in m line.
   for (i = 0; i < sdpLines.length; i++) {
     if (sdpLines[i].search('opus/48000') !== -1) {
-      var opusPayload = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
-      if (opusPayload) {
-        sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], opusPayload);
+      var h264Payload = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
+      if (h264Payload) {
+        sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], h264Payload);
       }
       break;
     }
