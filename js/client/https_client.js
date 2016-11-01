@@ -348,7 +348,7 @@ function preferH264(sdp)
     }
   }
 
-  // Remove CN in m line and sdp.
+  // Remove red in m line and sdp.
   sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
 
   sdp = sdpLines.join('\r\n');
@@ -477,8 +477,13 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   for (var i = sdpLines.length - 1; i >= 0; i--) {
     var regularEq = '/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i';
     var payload = extractSdp(sdpLines[i], regularEq);
+
+    console.log('>>>>> removeRtpmapTarget().payload='+payload);
+
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
+      console.log('>>>>> removeRtpmapTarget().cnPos='+ (cnPos+ cnPos !== -1? ', mLineElements['+cnPos+']='+mLineElements[cnPos]:'-1'));
+
       if (cnPos !== -1) {
         // Remove CN payload from m line.
         mLineElements.splice(cnPos, 1);
