@@ -289,7 +289,9 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
+  console.log('????? before=', sessionDescription.sdp)
   sessionDescription.sdp = preferH264(sessionDescription.sdp);
+  console.log('????? after=', sessionDescription.sdp)
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -375,7 +377,7 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
       var cnPos = mLineElements.indexOf(payload);
       if (cnPos !== -1) {
         // Remove CN payload from m line.
-        //mLineElements.splice(cnPos, 1);
+        mLineElements.splice(cnPos, 1);
       }
       // Remove CN line in sdp
       sdpLines.splice(i, 1);
