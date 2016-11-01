@@ -289,7 +289,7 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  //sessionDescription.sdp = preferH264(sessionDescription.sdp);
+  sessionDescription.sdp = preferH264(sessionDescription.sdp);
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -330,18 +330,23 @@ function preferH264(sdp)
   var sdpLines = sdp.split('\r\n');
   var mLineIndex;
   // Search for m line.
-  for (var i = 0; i < sdpLines.length; i++) {
-    if (sdpLines[i].search('m=video') !== -1) {
+  for (var i = 0; i < sdpLines.length; i++) 
+  {
+    if (sdpLines[i].search('m=video') !== -1) 
+    {
       mLineIndex = i;
       break;
     }
   }
 
   // If H264 is available, set it as the default in m line.
-  for (i = 0; i < sdpLines.length; i++) {
-    if (sdpLines[i].search('H264/') !== -1) {
+  for (i = 0; i < sdpLines.length; i++) 
+  {
+    if (sdpLines[i].search('H264/') !== -1) 
+    {
       var h264Payload = extractSdp(sdpLines[i], /:(\d+) H264\//i);
-      if (h264Payload) {
+      if (h264Payload) 
+      {
         sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], h264Payload);
       }
       break;
@@ -355,108 +360,34 @@ function preferH264(sdp)
   return sdp;
 }
 
-//在没搞清楚SDP的完整内容之前，还不能这样乱改
-function preferH264ByModifyAll(sdp)
+function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
 {
-    var sdpLines = sdp.split('\r\n');
-    for(var i = sdpLines.length-1; i >= 0; i--)
-    {
-      if( sdpLines[i].search('a=rtpmap:') !=-1 )
-      {
-        if( sdpLines[i].toUpperCase().search('VP8') !=-1 || sdpLines[i].toUpperCase().search('VP9') !=-1)
-        {
-          var j = i+1;
-          while( (sdpLines[j].search('a=rtcp-fb:') != -1 || sdpLines[j].search('a=fmtp:') != -1 ) && j < sdpLines.length)
-            j++;
-          
-          var deleteItems = sdpLines.splice(i, j-i);
-          /*
-          for(var k = 0; deleteItems != null && k < deleteItems.length; k++)
-            console.log('[preferH264.delete]:'+deleteItems[k]);
-          */
-        }
-      }
+  var mLineElements = sdpLines[mLineIndex].split(' ');
+  // Scan from end for the convenience of removing an item.
+  var regularEq = new RegExp('a=rtpmap:(\\d+) '+removeTarget+'\/\\d+', 'i' );
 
-      //m=video 9 UDP/TLS/RTP/SAVPF 100 101 107 116 117 96 97 99 98
-      //去掉里面的100=vp8, 101=vp9
-      if( sdpLines[i].search('m=video') !=-1 )
-      {
-        var elements = sdpLines[i].split(' ');
-        var newLine = [];
-        var m = 0
-        for(var l = 0; l < elements.length; l++)
-        {
-          if(elements[l] === '100' || elements[l] === '101')
-            continue;
-          else
-            newLine[m++] = elements[l];
-        }
-        newLine[1] = ''+(newLine.length-3);
-        sdpLines[i] = newLine.join(' ');
-        console.log('preferH264(), after remove:'+ sdpLines[i]);
-      }
+  for (var i = sdpLines.length - 1; i >= 0; i--) {
+    //var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
+    var payload = extractSdp(sdpLines[i], regularEq);
 
-      /*去掉ftmp和apt里的100和101内容*/
-      //↵a=fmtp:96 apt=100
-      if( sdpLines[i].search('a=fmtp') !=-1 && (sdpLines[i].search('apt=100') || sdpLines[i].search('apt=101')) ) 
-      {
-        sdpLines.splice(i, 1);
+    if (payload) {
+      var cnPos = mLineElements.indexOf(payload);
+      if (cnPos !== -1) {
+        // Remove CN payload from m line.
+        mLineElements.splice(cnPos, 1);
       }
-
-      //去掉↵a=rtpmap:116 red/90000
-      if( sdpLines[i].toLowerCase().search('a=rtpmap:116 red') !=-1 ) 
-      {
-        sdpLines.splice(i, 1);
-      }
+      // Remove CN line in sdp
+      sdpLines.splice(i, 1);
     }
+  }
 
-    sdp = sdpLines.join('\r\n');
-    return sdp;
+  sdpLines[mLineIndex] = mLineElements.join(' ');
+  return sdpLines;
 }
 
-///////////////////////////////////////////
-
-// Set Opus as the default audio codec if it's present.
-function preferOpus(sdp) {
-  var sdpLines = sdp.split('\r\n');
-  var mLineIndex;
-  // Search for m line.
-  for (var i = 0; i < sdpLines.length; i++) {
-    if (sdpLines[i].search('m=audio') !== -1) {
-      mLineIndex = i;
-      break;
-    }
-  }
-  if (mLineIndex === null) {
-    return sdp;
-  }
-
-  // If Opus is available, set it as the default in m line.
-  for (i = 0; i < sdpLines.length; i++) {
-    if (sdpLines[i].search('opus/48000') !== -1) {
-      var h264Payload = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
-      if (h264Payload) {
-        sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], h264Payload);
-      }
-      break;
-    }
-  }
-
-  // Remove CN in m line and sdp.
-  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'CN');
-
-  sdp = sdpLines.join('\r\n');
-  return sdp;
-}
-
-function extractSdp(sdpLine, pattern) 
-{
-  if( sdpLine.match(pattern) )
-  {
-    var result = sdpLine.split(/[ :]/)
-    return result && result.length >= 3 ? result[1] : null;
-  }
-  return null;
+function extractSdp(sdpLine, pattern) {
+  var result = sdpLine.match(pattern);
+  return result && result.length === 2 ? result[1] : null;
 }
 
 // Set the selected codec to the first in m line.
@@ -473,35 +404,4 @@ function setDefaultCodec(mLine, payload) {
     }
   }
   return newLine.join(' ');
-}
-
-// Strip CN from sdp before CN constraints is ready.
-function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
-  var mLineElements = sdpLines[mLineIndex].split(' ');
-
-  var regularEq = new RegExp('a=rtpmap:[0-9]+ '+removeTarget+'\/[0-9]+', 'i' );
-
-  // Scan from end for the convenience of removing an item.
-  for (var i = sdpLines.length - 1; i >= 0; i--) 
-  {
-    //var regularEq = new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
-    var payload = extractSdp(sdpLines[i], regularEq);
-
-    if (payload) {
-      var cnPos = mLineElements.indexOf(payload);
-      console.log('>>>>> removeRtpmapTarget().content='+ sdpLines[i]);
-      console.log('>>>>> >>>>>removeRtpmapTarget().cnPos='+ cnPos);
-      console.log('>>>>> >>>>>removeRtpmapTarget().elements='+ mLineElements[cnPos]);
-
-      if (cnPos !== -1) {
-        // Remove removeTarget payload from m line.
-        mLineElements.splice(cnPos, 1);
-      }
-      // Remove CN line in sdp
-      sdpLines.splice(i, 1);
-    }
-  }
-
-  sdpLines[mLineIndex] = mLineElements.join(' ');
-  return sdpLines;
 }
