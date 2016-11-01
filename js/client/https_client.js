@@ -474,12 +474,13 @@ function setDefaultCodec(mLine, payload) {
 function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   var mLineElements = sdpLines[mLineIndex].split(' ');
 
-  console.log('>>>>> removeRtpmapTarget().removeTarget='+removeTarget, (/a=rtpmap:(\d+) red\/\d+/i));
+  console.log('>>>>> removeRtpmapTarget().removeTarget='+(new RegExp('a=rtpmap:(\d+) '+removeTarget+'\/\d+', 'i' )).test('a=rtpmap:116 red/90000') );
 
   // Scan from end for the convenience of removing an item.
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
-    var regularEq = new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
+    //var regularEq = new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
+    var regularEq = new RegExp('a=rtpmap:(\d+) '+removeTarget+'\/\d+', 'i' );
     var payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) {
