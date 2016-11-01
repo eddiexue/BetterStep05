@@ -498,7 +498,7 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
         mLineElements.splice(cnPos, 1);
       }
       // Remove CN line in sdp
-      //sdpLines.splice(i, 1);
+      sdpLines.splice(i, 1);
     }
   }
 
