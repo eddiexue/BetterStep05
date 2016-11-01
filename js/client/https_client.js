@@ -115,7 +115,7 @@ var localVideo = document.querySelector('#localVideo');
 var remoteVideo = document.querySelector('#remoteVideo');
 
 navigator.mediaDevices.getUserMedia({
-  audio: true,
+  audio: false,
   video: true
 })
 .then(gotStream)//启动设备会被卡住，gotStream可能后面才会执行
