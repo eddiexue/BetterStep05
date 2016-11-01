@@ -455,7 +455,7 @@ function extractSdp(sdpLine, pattern) {
   if( sdpLine.search('a=rtpmap:116 red') !== -1 )
   {
      console.log('||||||| match='+sdpLine);
-     console.log('||||||| result=',result);
+     console.log('||||||| result=',(result && result.length === 2 ? result[1] : null));
      console.log('||||||| match?'+sdpLine.match(pattern));
   }
 
