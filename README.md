@@ -32,3 +32,5 @@ STUN/TURN配置
 3、必须启用use-auth-secret，并搭配加密秘钥static-auth-secret=4080218913，用户名:密码的形式不再可用
 
 //@TODO: 修改SDP的内容，使其生成h264内容
+
+wireshark抓包，官方文档指引里的版本太老（https://webrtc.org/testing/wireshark/），新版本查看rtp协议的地方变了
