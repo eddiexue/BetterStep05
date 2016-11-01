@@ -479,20 +479,15 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   // Scan from end for the convenience of removing an item.
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
-    var regularEq = '/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i';
-
-    console.log('>>>>> removeRtpmapTarget().regularEq='+regularEq);
-
+    var regularEq = new new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
     var payload = extractSdp(sdpLines[i], regularEq);
-
-    console.log('>>>>> removeRtpmapTarget().payload='+payload);
 
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
       console.log('>>>>> removeRtpmapTarget().cnPos='+ (cnPos+ cnPos !== -1? ', mLineElements['+cnPos+']='+mLineElements[cnPos]:'-1'));
 
       if (cnPos !== -1) {
-        // Remove CN payload from m line.
+        // Remove removeTarget payload from m line.
         mLineElements.splice(cnPos, 1);
       }
       // Remove CN line in sdp
