@@ -375,10 +375,10 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
       var cnPos = mLineElements.indexOf(payload);
       if (cnPos !== -1) {
         // Remove CN payload from m line.
-        mLineElements.splice(cnPos, 1);
+        //mLineElements.splice(cnPos, 1);
       }
       // Remove CN line in sdp
-      //sdpLines.splice(i, 1);
+      sdpLines.splice(i, 1);
     }
   }
 
