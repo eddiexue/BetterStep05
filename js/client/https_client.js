@@ -479,7 +479,7 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
   // Scan from end for the convenience of removing an item.
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
-    var regularEq = new new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
+    var regularEq = new RegExp('/a=rtpmap:(\d+) '+removeTarget+'\/\d+/i');
     var payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) {
