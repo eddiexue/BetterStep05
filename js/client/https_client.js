@@ -489,7 +489,9 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget) {
 
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
-      console.log('>>>>> removeRtpmapTarget().cnPos='+ (cnPos+ cnPos !== -1? ', mLineElements['+cnPos+']='+mLineElements[cnPos]:'-1'));
+      console.log('>>>>> removeRtpmapTarget().content='+ sdpLines[i]);
+      console.log('>>>>> >>>>>removeRtpmapTarget().cnPos='+ cnPos);
+      console.log('>>>>> >>>>>removeRtpmapTarget().elements='+ mLineElements[cnPos]);
 
       if (cnPos !== -1) {
         // Remove removeTarget payload from m line.
