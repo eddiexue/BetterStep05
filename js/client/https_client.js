@@ -289,9 +289,9 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  console.log('????? before=', sessionDescription.sdp)
+  //console.log('????? before=', sessionDescription.sdp)
   sessionDescription.sdp = preferH264(sessionDescription.sdp);
-  console.log('????? after=', sessionDescription.sdp)
+  //console.log('????? after=', sessionDescription.sdp)
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -342,6 +342,7 @@ function preferH264(sdp)
   }
 
   // If H264 is available, set it as the default in m line.
+  /*
   for (i = 0; i < sdpLines.length; i++) 
   {
     if (sdpLines[i].search('H264/') !== -1) 
@@ -354,6 +355,7 @@ function preferH264(sdp)
       break;
     }
   }
+  */
 
   removeVideoCodecByName(sdpLines, mLineIndex, 'red');
   removeVideoCodecByName(sdpLines, mLineIndex, 'ulpfec');
