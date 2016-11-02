@@ -355,27 +355,92 @@ function preferH264(sdp)
     }
   }
 
-  // Remove red in m line and sdp.
-  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
-  
-  // Remove ulpfec in m line and sdp.
-  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'ulpfec');
+  removeVideoCodecByName(sdpLines, mLineIndex, 'red');
+  removeVideoCodecByName(sdpLines, mLineIndex, 'ulpfec');
 
   sdp = sdpLines.join('\r\n');
   return sdp;
 }
 
-function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
+
+function removeVideoCodecByName(sdpLines, mLineIndex, targetName)
+{
+  var targetPayload = removeRtpmapByName(sdpLines, mLineIndex, targetName);
+  if( targetPayload )
+  {
+    removeRtcpfbByPayload(sdpLines, mLineIndex, targetPayload);
+    removeFmtpByPayload(sdpLines, mLineIndex, targetPayload);
+    var associatedPayload = removeFmtpAptByPayload(sdpLines, mLineIndex, targetPayload)
+    if( associatedPayload )
+    {
+     removeRtmpByPayload(sdpLines, mLineIndex, associatedPayload)
+    }
+  }
+}
+
+function removeRtmpByPayload(sdpLines, mLineIndex, targetPayload)
 {
   var mLineElements = sdpLines[mLineIndex].split(' ');
-  // Scan from end for the convenience of removing an item.
-  var regularEq = new RegExp('a=rtpmap:(\\d+) '+removeTarget+'\/\\d+', 'i' );
+  var regularEq = new RegExp('a=rtpmap:'+targetPayload+' ', 'i' );
+
+  for (var i = sdpLines.length - 1; i >= 0; i--) 
+  {
+    if (sdpLines[i].search(regularEq) !=-1)
+    {
+      var cnPos = mLineElements.indexOf(targetPayload);
+      if (cnPos !== -1) {
+        mLineElements.splice(cnPos, 1);
+      }
+      sdpLines.splice(i, 1);
+    }
+  }
+
+  sdpLines[mLineIndex] = mLineElements.join(' ');
+}
+
+function removeFmtpAptByPayload(sdpLines, mLineIndex, targetPayload)
+{
+  var associatedPayload = null;
+  var regularEq = new RegExp('a=fmtp:[0-9]+ apt='+targetPayload, 'i' );
+
+  for (var i = sdpLines.length - 1; i >= 0; i--) 
+  {
+    if (sdpLines[i].search(regularEq) !=-1)
+    {
+      associatedPayload = sdpLines[i].split(/[:| ]/)[1];
+      sdpLines.splice(i, 1);
+    }
+  }
+
+  return associatedPayload;
+}
+
+function removeFmtpByPayload(sdpLines, mLineIndex, targetPayload)
+{
+  for (var i = sdpLines.length - 1; i >= 0; i--) 
+  {
+    if (sdpLines[i].search('a=fmtp:'+targetPayload) !=-1) 
+      sdpLines.splice(i, 1);
+  }
+}
+
+function removeRtcpfbByPayload(sdpLines, mLineIndex, targetPayload)
+{
+    for (var i = sdpLines.length - 1; i >= 0; i--) 
+    {
+      if (sdpLines[i].search('a=rtcp-fb:'+targetPayload) !=-1) 
+        sdpLines.splice(i, 1);
+    }
+}
+
+function removeRtpmapByName(sdpLines, mLineIndex, targetName)
+{
+  var mLineElements = sdpLines[mLineIndex].split(' ');
+  var regularEq = new RegExp('a=rtpmap:(\\d+) '+targetName+'\/\\d+', 'i' );
 
   var targetPayload = null;
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
-    //var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
-    //删掉行：a=rtpmap:116 red/90000
     var payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) 
@@ -392,21 +457,8 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
     }
   }
 
-  //删掉相应的行：a=fmtp:98 apt=116
-  if( targetPayload )
-  {
-    regularEq = new RegExp('a=fmtp:(\\d+) apt='+targetPayload, 'i' );
-    for(var j = sdpLines.length - 1; j >= 0; j--)
-    {
-      if( sdpLines[j].match(regularEq) )
-      {
-        sdpLines.splice(j, 1);
-      }
-    }
-  }
-
   sdpLines[mLineIndex] = mLineElements.join(' ');
-  return sdpLines;
+  return targetPayload;
 }
 
 
@@ -415,6 +467,7 @@ function extractSdp(sdpLine, pattern)
   var result = sdpLine.match(pattern);
   return result && result.length === 2 ? result[1] : null;
 }
+
 
 // Set the selected codec to the first in m line.
 function setDefaultCodec(mLine, payload) 
