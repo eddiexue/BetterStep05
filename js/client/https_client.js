@@ -357,7 +357,9 @@ function preferH264(sdp)
 
   removeVideoCodecByName(sdpLines, mLineIndex, 'red');
   removeVideoCodecByName(sdpLines, mLineIndex, 'ulpfec');
-
+  removeVideoCodecByName(sdpLines, mLineIndex, 'VP8');
+  removeVideoCodecByName(sdpLines, mLineIndex, 'VP9');
+  
   sdp = sdpLines.join('\r\n');
   return sdp;
 }
