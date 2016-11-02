@@ -392,9 +392,9 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
     regularEq = new RegExp('a=fmtp:(\\d+) apt='+payload, 'i' );
     for(var j = sdpLines.length - 1; j >= 0; j--)
     {
-      if( sdpLine.match(regularEq) )
+      if( sdpLines[j].match(regularEq) )
       {
-        sdpLines.splice(i, 1);
+        sdpLines.splice(j, 1);
       }
     }
   }
