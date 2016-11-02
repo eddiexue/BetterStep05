@@ -289,9 +289,9 @@ function setLocalAndSendMessage(sessionDescription)
 {
   // Set Opus as the preferred codec in SDP if Opus is present.
   // sessionDescription.sdp = preferOpus(sessionDescription.sdp);
-  //console.log('????? before=', sessionDescription.sdp)
+  console.log('????? before=', sessionDescription.sdp)
   sessionDescription.sdp = preferH264(sessionDescription.sdp);
-  //console.log('????? after=', sessionDescription.sdp)
+  console.log('????? after=', sessionDescription.sdp)
   pc.setLocalDescription(sessionDescription);
   sendMsgToOthers(sessionDescription, room);
 }
@@ -368,10 +368,12 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
   // Scan from end for the convenience of removing an item.
   var regularEq = new RegExp('a=rtpmap:(\\d+) '+removeTarget+'\/\\d+', 'i' );
 
+  var payload = null;
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
     //var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
-    var payload = extractSdp(sdpLines[i], regularEq);
+    //删掉行：a=rtpmap:116 red/90000
+    payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
@@ -384,17 +386,33 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
     }
   }
 
+  //删掉相应的行：a=fmtp:98 apt=116
+  if( payload )
+  {
+    regularEq = new RegExp('a=fmtp:(\\d+) apt='+payload, 'i' );
+    for(var j = sdpLines.length - 1; j >= 0; j--)
+    {
+      if( sdpLine.match(regularEq) )
+      {
+        sdpLines.splice(i, 1);
+      }
+    }
+  }
+
   sdpLines[mLineIndex] = mLineElements.join(' ');
   return sdpLines;
 }
 
-function extractSdp(sdpLine, pattern) {
+
+function extractSdp(sdpLine, pattern) 
+{
   var result = sdpLine.match(pattern);
   return result && result.length === 2 ? result[1] : null;
 }
 
 // Set the selected codec to the first in m line.
-function setDefaultCodec(mLine, payload) {
+function setDefaultCodec(mLine, payload) 
+{
   var elements = mLine.split(' ');
   var newLine = [];
   var index = 0;

@@ -1,3 +1,34 @@
+# WebRTC实现服务器中转模式的多人视频会议
+## 双人实时视频通话场景
+
+### 安全相关的问题
+关于信令服务的安全设置
+关于STUN/TRUN服务的安全设置
+关于如何查看查看视频裸流的办法？
+
+### 在SDP中设置H264优先
+删除VP8/VP9/H264任意一个都会报错，只能调整其位置
+删除red/90000会报解析错误，尚未解决？
+
+```javascript
+Uncaught (in promise) DOMException: Failed to set local offer sdp: Session error code: ERROR_CONTENT. Session error description: Failed to set local video description recv parameters..
+```
+
+### 调试环境的问题
+公司内网各种限制，安装开源软件各种麻烦
+wireshark抓包，官网版本旧了，2.0以上版本位置变了
+chrome如何打开更详细的log
+mac下的VSC真心好用，编辑功能强大自不必说，支持md、能直接调试node.js、能直接commit、能在界面下方开终端窗口方便命令行操作
+
+### 一个可更好的Step-05示例代码
+
+## 多人实时视频通话场景？
+多个人怎么互相交换SDP？
+多个人观看是自动做的混音、混流？
+
+
+
+
 1. 购买了一台腾讯云虚拟主机（CentOS），装了gcc、git
   1. yum install perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker 
   1. yum install expat-devel  curl-devel openssl-devel
