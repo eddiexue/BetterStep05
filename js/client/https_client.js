@@ -357,6 +357,9 @@ function preferH264(sdp)
 
   // Remove red in m line and sdp.
   sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'red');
+  
+  // Remove ulpfec in m line and sdp.
+  sdpLines = removeRtpmapTarget(sdpLines, mLineIndex, 'ulpfec');
 
   sdp = sdpLines.join('\r\n');
   return sdp;
