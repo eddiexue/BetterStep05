@@ -375,7 +375,8 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
     //删掉行：a=rtpmap:116 red/90000
     var payload = extractSdp(sdpLines[i], regularEq);
 
-    if (payload) {
+    if (payload) 
+    {
       var cnPos = mLineElements.indexOf(payload);
       if (cnPos !== -1) {
         // Remove CN payload from m line.
@@ -391,7 +392,7 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
   //删掉相应的行：a=fmtp:98 apt=116
   if( targetPayload )
   {
-    regularEq = new RegExp('a=fmtp:(\\d+) apt='+payload, 'i' );
+    regularEq = new RegExp('a=fmtp:(\\d+) apt='+targetPayload, 'i' );
     for(var j = sdpLines.length - 1; j >= 0; j--)
     {
       if( sdpLines[j].match(regularEq) )
