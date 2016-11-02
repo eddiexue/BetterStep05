@@ -368,12 +368,12 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
   // Scan from end for the convenience of removing an item.
   var regularEq = new RegExp('a=rtpmap:(\\d+) '+removeTarget+'\/\\d+', 'i' );
 
-  var payload = null;
+  var targetPayload = null;
   for (var i = sdpLines.length - 1; i >= 0; i--) 
   {
     //var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
     //删掉行：a=rtpmap:116 red/90000
-    payload = extractSdp(sdpLines[i], regularEq);
+    var payload = extractSdp(sdpLines[i], regularEq);
 
     if (payload) {
       var cnPos = mLineElements.indexOf(payload);
@@ -383,11 +383,13 @@ function removeRtpmapTarget(sdpLines, mLineIndex, removeTarget)
       }
       // Remove CN line in sdp
       sdpLines.splice(i, 1);
+
+      targetPayload = payload;
     }
   }
 
   //删掉相应的行：a=fmtp:98 apt=116
-  if( payload )
+  if( targetPayload )
   {
     regularEq = new RegExp('a=fmtp:(\\d+) apt='+payload, 'i' );
     for(var j = sdpLines.length - 1; j >= 0; j--)
