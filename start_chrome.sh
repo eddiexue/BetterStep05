@@ -6,4 +6,3 @@
 #a) --vmodule=*source*/talk/*=3
 #b)  --vmodule=*third_party/libjingle/*=3
 #c)  --vmodule=*libjingle/source/talk/*=3
-google-chrome --enable-logging=stderr --log-level=4 --vmodule=*libjingle/*=3,*=0
