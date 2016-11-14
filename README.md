@@ -65,3 +65,48 @@ STUN/TURN配置
 //@TODO: 修改SDP的内容，使其生成h264内容
 
 wireshark抓包，官方文档指引里的版本太老（https://webrtc.org/testing/wireshark/），新版本查看rtp协议的地方变了
+
+
+
+
+
+"v=0
+↵o=- 5515643570159031865 2 IN IP4 127.0.0.1
+↵s=-
+↵t=0 0
+↵a=group:BUNDLE video
+↵a=msid-semantic: WMS boZGr3yqoqSPSDYHJKEu9fU9Gpq57qMWnJGp
+↵m=video 9 UDP/TLS/RTP/SAVPF 107 99
+↵c=IN IP4 0.0.0.0
+↵a=rtcp:9 IN IP4 0.0.0.0
+↵a=ice-ufrag:c6ZD
+↵a=ice-pwd:Eryn2erIzCEd/ZglqOEsJMjy
+↵a=fingerprint:sha-256 3E:EB:FF:87:4D:1A:53:4D:06:2A:1F:57:F0:7C:D4:31:D5:E5:C2:1C:80:F7:D4:F7:37:86:D2:10:47:A2:87:BB
+↵a=setup:actpass
+↵a=mid:video
+↵a=extmap:2 urn:ietf:params:rtp-hdrext:toffset
+↵a=extmap:3 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
+↵a=extmap:4 urn:3gpp:video-orientation
+↵a=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay
+↵a=sendrecv
+↵a=rtcp-mux
+↵a=rtcp-rsize
+↵a=rtpmap:107 H264/90000
+↵a=rtcp-fb:107 ccm fir
+↵a=rtcp-fb:107 nack
+↵a=rtcp-fb:107 nack pli
+↵a=rtcp-fb:107 goog-remb
+↵a=rtcp-fb:107 transport-cc
+↵a=fmtp:107 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f
+↵a=rtpmap:99 rtx/90000
+↵a=fmtp:99 apt=107
+↵a=ssrc-group:FID 3982266123 424105406
+↵a=ssrc:3982266123 cname:vX6Qq/R0j9D8F5gN
+↵a=ssrc:3982266123 msid:boZGr3yqoqSPSDYHJKEu9fU9Gpq57qMWnJGp 9b5c62b1-6639-4b22-b536-4219054195dd
+↵a=ssrc:3982266123 mslabel:boZGr3yqoqSPSDYHJKEu9fU9Gpq57qMWnJGp
+↵a=ssrc:3982266123 label:9b5c62b1-6639-4b22-b536-4219054195dd
+↵a=ssrc:424105406 cname:vX6Qq/R0j9D8F5gN
+↵a=ssrc:424105406 msid:boZGr3yqoqSPSDYHJKEu9fU9Gpq57qMWnJGp 9b5c62b1-6639-4b22-b536-4219054195dd
+↵a=ssrc:424105406 mslabel:boZGr3yqoqSPSDYHJKEu9fU9Gpq57qMWnJGp
+↵a=ssrc:424105406 label:9b5c62b1-6639-4b22-b536-4219054195dd
+↵"
