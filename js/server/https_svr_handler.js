@@ -70,6 +70,7 @@ function parseINIString(data)
 //从turnserver配置文件中读取？？
 var turnserver_conf = parseINIString(fs.readFileSync( workspaceDir+'/../../turnserver/etc/turnserver.conf').toString());
 var turn_static_auth_secret = turnserver_conf['static-auth-secret'];
+//测试发现这个选项其实没有实际作用，这里只是用来拿到Turnserver外网IP
 var externalIp = turnserver_conf['external-ip'];
 var turn_usercombo  =  Math.floor(((new Date()).valueOf()/1000+86400*3650))+':'+'eddiexue';
 var turn_password   = crypto.createHmac('sha1', turn_static_auth_secret).update(turn_usercombo).digest().toString('base64');
