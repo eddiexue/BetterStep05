@@ -32,13 +32,13 @@ codelab由多个示例组成，每一个示例都会展示WebRTC的部分能力�
 
 在本地体验了codelab所有示例之后，我们就迫不及待地开始把服务往后台搬了（毕竟要实现后台中转嘛），在我们测试环境的服务器上，碰到了第二个坑：大公司病。我们这边网络环境分为：办公网、开发网、体验网、测试网...不同类型网络之间相互隔离，各种防火墙，各种限制策略。想要在公司测试环境服务器通过NPM下载Node.js依赖库势比登天，测试环境gcc版本低的让人落泪，编译个开源代码烦得让人心碎。于是果断抛弃公司内网环境，购买`云虚拟主机`，各种限制一扫而空，真是让人神清气爽精神百倍--除了被墙之外其他都~~嗯，挺好的
 
-已经大体阅读过官网入门文档的我们，已经知道至少要搭两个后台服务，即：信令服务和STUN/TURN中转服务。按照codelab上演示的方案，信令服务我们选择[Node.js](https://nodejs.org/en/)+socket.io+node-static。Node.js的话去官网下载一个最新版本的二进制安装包吧，别折腾源码编译了。安装完成之后，到含有package.json的目录下执行`npm install`即可自动下载socket.io及其依赖组件。值得一提的是，由于嫌弃step-05流程写得太乱，我用socket.io新版本（1.4.7）的API重写了信令部分的逻辑，所以package.json里面socket.io的版本比step-05要新。这里又忍不住吐槽，socket.io文档写得很差，不知所云且语焉不详，平白给使用者添堵。
+已经大体阅读过官网入门文档的我们，已经知道至少要搭两个后台服务，即：信令服务和STUN/TURN中转服务。按照codelab上演示的方案，信令服务我们选择[Node.js](https://nodejs.org/en/)+socket.io+node-static。Node.js的话去官网下载一个最新版本的二进制安装包吧，别折腾源码编译了。安装完成之后，到含有package.json的目录下执行`npm install`即可自动下载socket.io及其依赖组件。值得一提的是，由于嫌弃step-05流程写得太乱，我用socket.io新版本（1.4.7）的API重写了信令部分的逻辑，所以package.json里面socket.io的版本比step-05要新。这里又忍不住吐槽，socket.io文档可读性很差，平白给使用者添堵。
 
-STUN/TURN服务就选官网推荐的[COTURN](https://github.com/coturn/coturn)（该项目是rfc5766-turn-server的升级版）。有些linux发行版里已经带了的，就可以直接使用。如果没带就从源码编译，过程也不复杂，有疑问就阅读INSTALL文档，里面内容非常详尽，真是非常好的文档范本。
+STUN/TURN服务就选官网推荐的[COTURN](https://github.com/coturn/coturn)（该项目是rfc5766-turn-server的升级版）。有些linux发行版里已经带了的，就可以直接使用。如果没带就从源码编译，过程也不复杂，有疑问就阅读INSTALL文档，里面内容非常详尽，真是非常好的文档范本，socket.io的开发者你学着点~
 
-上文说了，由于不满意codelab的两人视频示例代码step-05凌乱的流程和日志，我重写了部分代码，使流程和输出日志更清晰易读，有兴趣可以通过<https://github.com/eddiexue/BetterStep05>获取源码。在云主机上clone代码之后，按下面的步骤安装好依赖工具，执行`node js/server/https_svr_handler.js`即可启动服务。
+上文说了，由于不满意codelab的两人视频示例代码step-05凌乱的流程和日志，我重新梳理了一下代码，使流程和输出日志更清晰易读，有兴趣可以通过<https://github.com/eddiexue/BetterStep05>获取源码。在云主机上clone代码之后，按下面的步骤安装好依赖工具，执行`node js/server/https_svr_handler.js`即可启动服务。
 
-**特别提醒**，由于安全性的考虑，从Chrome版本47开始，[通道加密](http://webrtc-security.github.io/)成为WebRTC强制属性，而且加密方式仍在不断升升级。于是信令服务必须使用HTTPs【大坑1】、而STUN/TURN服务则必须使用域（realm）验证方能走通【大坑2】。另一个对实际使用有好处、但给测试验证造成大麻烦的是，最新版本浏览器都启用了端到端的数据加密，使得我们难以通过抓包来观察RTP、STUN/TRUN Message所携带的音视频原始内容，而**端到端加密的流程和处理方式又语焉不详**（我好像很喜欢这个词？）【大坑3】，为了能获得原始音视频payload，我们又被迫花时间去研究ICE、DTLS流程和数据解密方法。真是一步一坑啊~
+**特别提醒**，由于安全性的考虑，从Chrome版本47开始，[通道加密](http://webrtc-security.github.io/)成为WebRTC强制属性，而且加密方式仍在不断升级。于是信令服务必须使用HTTPs【大坑1】且STUN/TURN服务则必须使用域（realm）验证方能走通【大坑2】。另一个对实际使用有好处、但给测试验证造成大麻烦的是，最新版本浏览器都启用了端到端的数据加密，使得我们难以通过抓包来观察RTP、STUN/TRUN Message所携带的音视频原始内容，而**端到端加密的流程和处理方式又语焉不详**（我好像很喜欢这个词？）【大坑3】，为了能获得原始音视频payload，我们又被迫花时间去研究ICE、DTLS流程和数据解密方法。真是步履维艰~
 
 ### 云主机相关工具安装
 
@@ -49,12 +49,14 @@ STUN/TURN服务就选官网推荐的[COTURN](https://github.com/coturn/coturn)�
 ### 信令服务HTTPs证书生成
 
 HTTPs服务所使用的证书生成过程如下所示（由于不是权威认证机构签发的证书，所以浏览器会有警告）：
+
 1. openssl genrsa -out privatekey.pem 1024 //生成私钥
 1. openssl req -new -key privatekey.pem -out certrequest.csr //用私钥生成证书
 1. openssl x509 -req -in certrequest.csr -signkey privatekey.pem -out certificate.pem //用自己的私钥给自己的证书签名，浏览器会提示不安全，但好歹能自测用
 生成的证书放在源码根目录的cert文件夹里，服务代码`https_svr_handler.js`里会使用到。
 
 如果觉得自己测试不想用HTTPs这么麻烦，还可以在Chrome启动参数增加：
+
 1. --unsafely-treat-insecure-origin-as-secure="http://ServerIP:ServerPort" 
 1. --user-data-dir=/path/to/chromeCache/
 
@@ -73,7 +75,7 @@ HTTPs服务所使用的证书生成过程如下所示（由于不是权威认证
 
 一切准备就绪之后，可以用`node js/server/https_svr_handler.js`启动信令服务，用`turnserver -c path-to-conf/turnserver.conf`启动STUN/TURN服务。在浏览器侧，输入`https://x.x.x.x:8888`（端口是在`https_svr_handler.js`里指定的）启动两个tab即可看到双人通话的效果。在后台控制台和Chrome浏览器控制台（MAC：ctl+cmd+j）都可以看到流程相关的log输出。
 
-折腾这么久，终于跑通了，吐血撰文以记之，万里长征第0步。
+折腾这么久，终于跑通了，万里长征第0步，吐血~
 
 ## 强制媒体数据走中转的尝试
 
@@ -106,9 +108,9 @@ sendMsgToOthers(略)
 
 ## 强制视频使用H264编码的尝试
 
-由于我们希望WebRTC能够和我们现有的多人通话系统对接，而我们目前编解码都是采用H264和AAC，所以此时我们希望指定浏览器只使用H264来编码视频流。幸运的是，Chrome版本52已经支持了H264，而如果我们更早启动这个项目可能到这一步就夭折了~~
+由于我们希望WebRTC能够和我们现有的多人通话系统对接，而我们目前编解码都是采用H264和AAC，所以希望指定浏览器只使用H264来编码视频流。幸运的是，Chrome版本52已经支持了H264，而如果我们更早启动这个项目可能到这一步就夭折了~~
 
-通过上面一节我们知道，终端能力和通道都是通过信令交互完成的，而信令交互的内容是SDP，所以我们只需要正确调整SDP的内容即可达到目的。在粗略研究SDP字段含义之后，我们发现在setLocalDescription()之前，把`m=video xxxx`里面描述的视频编码类型的顺序改变一下，即把代表H264的type:107放在前面，浏览器就会优先选择H264（当然前提是两方浏览器都支持H264），看来浏览器是按照SDP中的顺序来确定优先级的。虽然按照上面的方法处理也可以，但是有洁癖的我们想把VP8和VP9都干掉，免得后面测试碍事，但由于对SDP缺乏了解，又没有困难制造了一把困难。
+通过上一节我们知道，终端能力和通道都是通过信令交互完成的，而信令交互的内容是SDP，所以我们只需要正确调整SDP的内容即可达到目的。在粗略研究SDP字段含义之后，我们发现在setLocalDescription()之前，把`m=video xxxx`里面描述的视频编码类型的顺序改变一下，即把代表H264的type:107放在前面，浏览器就会优先选择H264（当然前提是两方浏览器都支持H264），看来浏览器是按照SDP中的顺序来确定优先级的。虽然按照上面的方法处理也可以，但是有洁癖的我们想把VP8和VP9都干掉，免得后面测试碍事，但由于对SDP缺乏了解，又没有困难制造了一把困难。
 
 上面已经提到，浏览器支持的视频编码格式的类型列表是在`m=video`属性中指定的，例如：`m=video 9 UDP/TLS/RTP/SAVPF 107 99 98 97`，然后在下面会有每一个编码类型的关联配置，比如：
 ```
@@ -139,7 +141,7 @@ Uncaught (in promise) DOMException: Failed to set local offer sdp: Session error
 
 ### 关于抓包设置的建议
 
-研究WebRTC，抓包分析是必不可少的。然而官方文档有关wireshark抓包的指引内容太老（https://webrtc.org/testing/wireshark/），2.0以上版本的wireshark查看rtp协议的地方变了，用的时候Google一下吧。
+研究WebRTC，抓包分析是必不可少的。然而官方文档有关wireshark抓包的指引内容太老（<https://webrtc.org/testing/wireshark/>），2.0以上版本的wireshark查看rtp协议的地方变了，用的时候Google一下吧。
 
 ### 关于打开Chrome详细log的方法（MacOS）
 
