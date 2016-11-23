@@ -55,7 +55,7 @@ HTTPs服务所使用的证书生成过程如下所示（由于不是权威认证
 1. openssl x509 -req -in certrequest.csr -signkey privatekey.pem -out certificate.pem //用自己的私钥给自己的证书签名，浏览器会提示不安全，但好歹能自测用
 生成的证书放在源码根目录的cert文件夹里，服务代码`https_svr_handler.js`里会使用到。
 
-如果觉得自己测试不想用HTTPs这么麻烦，还可以在Chrome启动参数增加：
+这个简易的证书生成过程是参考[这里](http://blog.csdn.net/u011244942/article/details/49306777)的说明。还可以参考[[点我]](http://www.cnblogs.com/kyrios/p/tls-and-certificates.html)和[[点我](http://cnodejs.org/topic/54745ac22804a0997d38b32d)进一步加深理解。此外，如果觉得自己测试不想用HTTPs这么麻烦，还可以在Chrome启动参数增加：
 
 1. --unsafely-treat-insecure-origin-as-secure="http://ServerIP:ServerPort" 
 1. --user-data-dir=/path/to/chromeCache/
@@ -89,6 +89,8 @@ var wantHostMode      = false;
 var wantReflexiveMode = false;
 var wantRelayMode     = true; //此时此刻我们只想要后台中转模式
 
+function handleIceCandidate(event) 
+{
 var isHost = (ice.candidate.indexOf('typ host') !== -1);
 var isSrflx = (ice.candidate.indexOf('srflx') !== -1);
 var isRelay = (ice.candidate.indexOf('relay') !== -1);
@@ -104,6 +106,7 @@ if(wantRelayMode && ice.candidate.indexOf('relay') == -1)
     return;
 
 sendMsgToOthers(略)
+}
 ```
 
 ## 强制视频使用H264编码的尝试
@@ -132,7 +135,7 @@ a=fmtp:97 apt=98
 Uncaught (in promise) DOMException: Failed to set local offer sdp: Session error code: ERROR_CONTENT. Session error description: Failed to set local video description recv parameters..
 ```
 
-在失败和摸索中挣扎了许久之后，我们发现原来光删除和type:98相关的内容还不够，如果有和98相关联的属性中包含了其他编码类型，那么被关联的这个类型的所有信息也要被删除，以此类推。也就是说，虽然我们删除了含有98的所有行，但是由于存在`a=fmtp:97 apt=98`，所以所有和type:97相关的内容也都要被删除，由此递归进行直到所有关联内容被删干净为止。这段代码在，https_client.js中preferH264(sdp)中实现，如果嫌麻烦还是用开始说的简单方法处理好了，我是想留个折腾的纪念所以没删掉这段较长的SDP处理代码。。。
+在失败和摸索中挣扎了许久之后，我们发现原来光删除和type:98相关的内容还不够，如果有和98相关联的属性中包含了其他编码类型，那么被关联的这个类型的所有信息也要被删除，以此类推。也就是说，虽然我们删除了含有98的所有行，但是由于存在`a=fmtp:97 apt=98`，所以所有和type=97相关的内容也都要被删除，由此递归进行直到所有关联内容被删干净为止。这段代码在https_client.js中preferH264(sdp)中实现，如果嫌麻烦还是用开始说的简单方法处理好了，我是想留个折腾的纪念所以没删掉这段较长的SDP处理代码。。。
 
 ## 附录
 
